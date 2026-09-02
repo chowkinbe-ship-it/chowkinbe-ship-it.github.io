@@ -45,8 +45,7 @@
       "name": "月度陪跑",
       "description": "每日经营日报+月度诊断+持续优化，让老板随时掌握经营",
       "priceCurrency": "CNY",
-      "price": "2000",
-      "description": "2000元/月起"
+      "price": "2000"
     }
   ],
   "category": "酒店经营与收益管理",
@@ -54,8 +53,7 @@
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "销售咨询",
-    "telephone": "+86-18011809138",
-    "contactOption": "TollFree"
+    "telephone": "+86-18011809138"
   }
 }
 </script>
@@ -132,84 +130,539 @@
   ]
 }
 </script>
+
+<style>
+  :root {
+    --ink: #10384a;
+    --ink-deep: #0a2733;
+    --green: #1a6650;
+    --green-bright: #2d8a6e;
+    --gold: #d9a441;
+    --paper: #f5f7f6;
+    --line: #e3eae6;
+    --text: #2c3e46;
+    --muted: #6b7a80;
+    --shadow-lg: 0 1px 2px rgba(16,56,74,.06), 0 24px 60px -32px rgba(16,56,74,.28);
+    --shadow-md: 0 1px 2px rgba(16,56,74,.05), 0 14px 34px -24px rgba(16,56,74,.24);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; background:var(--paper); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased; }
+  ::selection { background:rgba(45,138,110,.18); }
+
+  .wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- 顶部导航 ---------- */
+  .nav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.86); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
+  .nav .wrap { display:flex; align-items:center; justify-content:space-between; height:60px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; color:var(--ink-deep); font-size:16px; }
+  .brand .mini { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--ink),var(--green)); display:grid; place-items:center; color:#fff; font-size:16px; box-shadow:0 4px 10px -4px rgba(16,56,74,.5); }
+  .nav-links { display:flex; gap:26px; font-size:14px; }
+  .nav-links a { color:var(--muted); text-decoration:none; transition:.15s; }
+  .nav-links a:hover { color:var(--green); }
+
+  /* ---------- Hero ---------- */
+  .hero { background:radial-gradient(1200px 520px at 18% -12%, #1f5f71 0%, var(--ink-deep) 55%, #071a22 100%); color:#fff; padding:84px 0 78px; position:relative; overflow:hidden; }
+  /* 弱网格，呼应"显微镜/数据" */
+  .hero::before { content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px); background-size:44px 44px; -webkit-mask-image:radial-gradient(760px 420px at 70% 30%,#000 30%,transparent 80%); mask-image:radial-gradient(760px 420px at 70% 30%,#000 30%,transparent 80%); }
+  .hero::after { content:""; position:absolute; inset:0; background:radial-gradient(760px 340px at 88% 18%, rgba(217,164,65,.14), transparent 70%), radial-gradient(420px 260px at 4% 88%, rgba(45,138,110,.16), transparent 70%); pointer-events:none; }
+  .hero .wrap { position:relative; z-index:1; display:grid; grid-template-columns:1.08fr .92fr; gap:48px; align-items:center; }
+
+  .eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:13px; color:#a6e0cb; letter-spacing:.5px; border:1px solid rgba(159,216,195,.38); background:rgba(159,216,195,.06); padding:6px 15px; border-radius:30px; margin-bottom:22px; }
+  .hero h1 { font-size:42px; line-height:1.24; font-weight:800; letter-spacing:.5px; }
+  .hero h1 .light { color:#7fd4b6; }
+  .hero .sub { margin-top:18px; font-size:16.5px; color:#d5e4de; max-width:526px; }
+
+  .hero .cta { margin-top:32px; display:flex; gap:14px; flex-wrap:wrap; }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:10px; font-size:15px; font-weight:600; text-decoration:none; transition:transform .18s, box-shadow .18s, background .2s; }
+  .btn-primary { background:linear-gradient(180deg,#e2b14f,var(--gold)); color:#10384a; box-shadow:0 10px 26px rgba(217,164,65,.38); }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(217,164,65,.5); }
+  .btn-ghost { border:1px solid rgba(255,255,255,.4); color:#fff; }
+  .btn-ghost:hover { background:rgba(255,255,255,.12); }
+  .hero .trust-notes { margin-top:22px; display:flex; gap:8px 20px; flex-wrap:wrap; font-size:12.5px; color:#a9c4bb; }
+  .hero .trust-notes span::before { content:"✓ "; color:#7fd4b6; font-weight:700; }
+
+  /* hero 右侧：拟物日报卡片 */
+  .hero-card { background:linear-gradient(180deg,#ffffff,#f6faf8); border-radius:18px; box-shadow:0 30px 70px -30px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.2); padding:20px 22px; color:var(--text); transform:rotate(0deg); border:1px solid rgba(255,255,255,.4); }
+  .hc-top { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .hc-title { font-size:13px; font-weight:700; color:var(--ink-deep); }
+  .hc-date { font-size:11.5px; color:var(--muted); background:#eef2f0; padding:2px 9px; border-radius:20px; }
+  .hc-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0; }
+  .hc-k { text-align:center; }
+  .hc-k .v { font-size:20px; font-weight:800; color:var(--ink-deep); }
+  .hc-k .v .up { color:var(--green-bright); font-weight:700; }
+  .hc-k .l { font-size:10.5px; color:var(--muted); margin-top:2px; }
+  .hc-bar-row { display:grid; grid-template-columns:44px 1fr 54px; align-items:center; gap:10px; font-size:11.5px; margin:10px 0; }
+  .hc-bar-row .ch { color:var(--muted); white-space:nowrap; }
+  .hc-bar-row .amt { color:var(--ink-deep); font-weight:700; text-align:right; white-space:nowrap; }
+  .hc-track { height:8px; background:#edf1ef; border-radius:6px; overflow:hidden; }
+  .hc-fill { height:100%; border-radius:6px; }
+  .hc-flag { display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--ink-deep); background:#f1f7f4; border:1px solid #ddeadf; padding:8px 11px; border-radius:9px; margin-top:4px; }
+  .hc-flag .dot { width:8px; height:8px; border-radius:50%; background:var(--green-bright); }
+  .hc-flag .dot.red { background:#c0543a; }
+  .hc-flag b { color:#c0543a; }
+
+  /* ---------- 通用区块 ---------- */
+  section { padding:70px 0; }
+  .sec-head { text-align:center; max-width:660px; margin:0 auto 42px; }
+  .sec-head .kicker { color:var(--green); font-size:12.5px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; }
+  .sec-head h2 { font-size:30px; color:var(--ink-deep); margin-top:8px; font-weight:800; letter-spacing:.3px; }
+  .sec-head p { color:var(--muted); margin-top:10px; font-size:15px; }
+
+  /* ---------- 日报一页预览 ---------- */
+  .report { background:#fff; border-radius:18px; box-shadow:var(--shadow-lg); overflow:hidden; border:1px solid var(--line); }
+  .report-top { padding:22px 28px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); background:#fbfdfc; }
+  .report-top .date { color:var(--muted); font-size:14px; font-weight:600; }
+  .report-top .tag { color:var(--green); font-size:12px; font-weight:600; background:rgba(26,102,80,.08); padding:3px 11px; border-radius:20px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); }
+  .kpi { background:#fff; padding:20px 12px; text-align:center; }
+  .kpi .label { font-size:12px; color:var(--muted); }
+  .kpi .val { font-size:25px; font-weight:800; color:var(--ink-deep); margin-top:4px; letter-spacing:.3px; }
+  .kpi .delta { font-size:12px; margin-top:3px; font-weight:600; }
+  .up { color:var(--green-bright); } .down { color:#c0543a; }
+  .report-body { display:grid; grid-template-columns:1.2fr .8fr; }
+  .rblock { padding:24px 26px; }
+  .rblock + .rblock { border-left:1px solid var(--line); }
+  .rblock h4 { font-size:14px; color:var(--ink-deep); margin-bottom:16px; display:flex; align-items:center; gap:8px; font-weight:700; }
+  .rblock h4 .ic { width:22px; height:22px; border-radius:6px; background:#eef6f2; color:var(--green); display:grid; place-items:center; font-size:11px; font-weight:700; }
+  .bars { display:flex; flex-direction:column; gap:13px; }
+  .bar-row .row-top { display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:5px; }
+  .bar-row .row-top .ch { font-weight:600; color:var(--ink-deep); }
+  .bar-row .row-top .amt { color:var(--muted); }
+  .bar-track { height:9px; background:#eef2f0; border-radius:6px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:6px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; background:#f1f7f4; border:1px solid #ddeadf; color:var(--ink-deep); padding:7px 12px; border-radius:9px; font-weight:500; }
+  .chip .flag { width:7px; height:7px; border-radius:50%; }
+  .action-list { list-style:none; }
+  .action-list li { font-size:13px; padding:10px 0; border-bottom:1px dashed var(--line); color:var(--text); display:flex; gap:9px; align-items:flex-start; }
+  .action-list li:last-child { border-bottom:none; }
+  .action-list li .dot { color:var(--gold); font-weight:700; flex-shrink:0; }
+  .action-list li .warn { color:#c0543a; font-weight:700; }
+
+  /* ---------- 八件事 ---------- */
+  .grid-8 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .mod { background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px 20px; transition:transform .2s, box-shadow .2s, border-color .2s; position:relative; overflow:hidden; }
+  .mod::after { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--green),var(--green-bright)); opacity:0; transition:.2s; }
+  .mod:hover { transform:translateY(-4px); box-shadow:0 18px 42px -22px rgba(16,56,74,.24); border-color:#cfe3da; }
+  .mod:hover::after { opacity:1; }
+  .mod .num { font-size:12px; color:var(--green); font-weight:700; letter-spacing:1.5px; }
+  .mod h3 { font-size:16px; color:var(--ink-deep); margin:8px 0 7px; }
+  .mod p { font-size:13px; color:var(--muted); }
+
+  /* ---------- 为什么是真人不只是软件（信任区） ---------- */
+  .trust-band { background:#0a2733; color:#fff; }
+  .trust-band .sec-head h2 { color:#fff; }
+  .trust-band .sec-head p { color:#a9c4bb; }
+  .trust-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .trust { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:26px 24px; }
+  .trust .ti { font-size:26px; }
+  .trust h3 { font-size:17px; color:#fff; margin:12px 0 8px; }
+  .trust p { font-size:13.5px; color:#b8cbd3; }
+  .trust .hl { color:#8fdcbf; font-weight:700; }
+
+  /* ---------- 收费 ---------- */
+  .pricing { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .plan { background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px 22px; text-align:center; transition:transform .2s, box-shadow .2s; }
+  .plan:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); }
+  .plan.hot { border:2px solid var(--gold); background:linear-gradient(180deg,#fffdf6,#fff); position:relative; }
+  .plan .rec { position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:linear-gradient(180deg,#e2b14f,var(--gold)); color:#10384a; font-size:11px; font-weight:700; padding:3px 16px; border-radius:20px; box-shadow:0 6px 14px -6px rgba(217,164,65,.6); }
+  .plan .pname { font-size:15px; font-weight:700; color:var(--ink-deep); }
+  .plan .price { font-size:34px; font-weight:800; color:var(--ink-deep); margin:12px 0 2px; letter-spacing:.5px; }
+  .plan .price small { font-size:13px; font-weight:600; color:var(--muted); }
+  .plan ul { list-style:none; margin-top:16px; text-align:left; }
+  .plan li { font-size:13px; color:var(--muted); padding:7px 0; border-bottom:1px dashed var(--line); display:flex; gap:8px; }
+  .plan li:last-child { border:none; }
+  .plan li .ck { color:var(--green-bright); flex-shrink:0; }
+
+  /* ---------- 联系 ---------- */
+  .contact { background:linear-gradient(135deg,#0a2733,#0e3a49 55%,#123c31); color:#fff; border-radius:24px; padding:56px 40px; text-align:center; position:relative; overflow:hidden; box-shadow:var(--shadow-lg); }
+  .contact::before { content:""; position:absolute; inset:0; background:radial-gradient(520px 260px at 85% 0%, rgba(217,164,65,.14), transparent 70%); }
+  .contact .in { position:relative; z-index:1; }
+  .contact h2 { font-size:29px; font-weight:800; letter-spacing:.3px; }
+  .contact p { color:#cfe2da; margin-top:10px; font-size:15px; }
+  .contact-ways { display:flex; justify-content:center; gap:34px; margin:32px 0 10px; flex-wrap:wrap; align-items:center; }
+  .cway { display:flex; flex-direction:column; gap:5px; }
+  .cway .lab { font-size:12.5px; color:#9cc3b5; }
+  .cway .big { font-size:21px; font-weight:700; color:#fff; letter-spacing:.5px; }
+  /* 微信名片码占位 */
+  .qrcode-card { width:148px; background:#fff; border-radius:14px; padding:14px 14px 12px; box-shadow:0 14px 34px -12px rgba(0,0,0,.5); text-align:center; }
+  .qc-head { display:flex; align-items:center; gap:9px; margin-bottom:12px; text-align:left; }
+  .qc-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--green-bright)); color:#fff; display:grid; place-items:center; font-size:15px; font-weight:700; flex-shrink:0; }
+  .qc-name { font-size:12px; font-weight:700; color:var(--ink-deep); line-height:1.3; }
+  .qc-id { font-size:10.5px; color:var(--muted); margin-top:2px; }
+  .qc-code { width:120px; height:120px; margin:0 auto; background:#fff; border:1px solid var(--line); border-radius:6px; display:grid; place-items:center; padding:6px; }
+  .qc-code svg { width:100%; height:100%; display:block; }
+  .qc-tip { font-size:10px; color:#8fa29b; margin-top:8px; letter-spacing:.5px; }
+  .contact .hint { font-size:12.5px; color:#8fb3a6; margin-top:12px; }
+  .contact .hint b { color:#cfe2da; }
+
+  /* ---------- "你可能正在找的" ---------- */
+  .faq-tags { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:900px; margin:0 auto; }
+  .t { background:#fff; border:1px solid var(--line); border-radius:30px; padding:9px 18px; font-size:13px; color:var(--ink-deep); transition:.15s; }
+  .t:hover { border-color:var(--green); color:var(--green); transform:translateY(-1px); }
+
+  .foot { text-align:center; padding:34px 0; color:var(--muted); font-size:12.5px; border-top:1px solid var(--line); background:#fff; }
+  .foot a { color:var(--green); text-decoration:none; }
+
+  /* ---------- 滚动渐入 ---------- */
+  .reveal { opacity:0; transform:translateY(18px); animation:rise .6s ease forwards; }
+  @keyframes rise { to { opacity:1; transform:none; } }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width:900px){
+    .hero .wrap{ grid-template-columns:1fr; gap:32px; }
+    .hero h1{ font-size:31px; }
+    .grid-8,.pricing,.trust-grid{ grid-template-columns:repeat(2,1fr); }
+    .kpis{ grid-template-columns:repeat(2,1fr); }
+    .report-body{ grid-template-columns:1fr; }
+    .rblock + .rblock{ border-left:none; border-top:1px solid var(--line); }
+    .nav-links{ display:none; }
+    .contact{ padding:42px 24px; }
+  }
+  @media (max-width:520px){
+    .grid-8,.pricing{ grid-template-columns:1fr; }
+    .hero-card{ display:none; }
+    .hero{ padding:56px 0 60px; }
+  }
+</style>
 </head>
 <body>
-<article>
 
-<h1>显微镜下的酒店AI</h1>
-<p><strong>让老板随时掌握经营，做好每一步收益决策。</strong></p>
+<nav class="nav">
+  <div class="wrap">
+    <div class="brand"><span class="mini">镜</span>显微镜下的酒店AI</div>
+    <div class="nav-links">
+      <a href="#report">经营日报</a>
+      <a href="#modules">服务内容</a>
+      <a href="#pricing">怎么收费</a>
+      <a href="#contact">联系我们</a>
+    </div>
+  </div>
+</nav>
 
-<p>酒店经营最怕的不是亏钱，是亏了钱还不知道亏在哪。现在用AI帮老板把每天的经营数据变成一页能看懂的报告——赚了多少、亏在哪、流量从哪来、竞对在做什么、评分怎么变、明天价格怎么定。不用自己翻平台、对账本，看一页就知道全局。</p>
+<!-- Hero -->
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">👁 用显微镜看清经营，用数据做好决策</span>
+      <h1>让老板随时掌握经营<br><span class="light">做好每一步收益决策</span></h1>
+      <p class="sub">酒店经营最怕的不是亏钱，是亏了钱还不知道亏在哪。用 AI 把每天的经营数据变成一页能看得懂的报告——赚了多少、亏在哪、流量从哪来、竞对在做什么、下一步怎么调。</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#contact">免费诊断一次</a>
+        <a class="btn btn-ghost" href="#report">看看一页日报长什么样</a>
+      </div>
+      <div class="trust-notes">
+        <span>先诊断后付费</span>
+        <span>基于 PMS 真实数据</span>
+        <span>真人服务，不是软件</span>
+      </div>
+    </div>
+    <div class="hero-card" aria-label="经营日报示例">
+      <div class="hc-top">
+        <div class="hc-title">今日经营日报</div>
+        <div class="hc-date">2026-09-02 · 示例</div>
+      </div>
+      <div class="hc-kpis">
+        <div class="hc-k"><div class="v">82%</div><div class="l">出租率&nbsp;<span class="up">▲3%</span></div></div>
+        <div class="hc-k"><div class="v">¥406</div><div class="l">平均房价</div></div>
+        <div class="hc-k"><div class="v">¥333</div><div class="l">RevPAR&nbsp;<span class="up">▲18</span></div></div>
+        <div class="hc-k"><div class="v">¥38.6k</div><div class="l">今日收入</div></div>
+      </div>
+      <div class="hc-bar-row"><span class="ch">携程</span><div class="hc-track"><div class="hc-fill" style="width:42%;background:#2d8a6e"></div></div><span class="amt">¥16.2k</span></div>
+      <div class="hc-bar-row"><span class="ch">美团</span><div class="hc-track"><div class="hc-fill" style="width:31%;background:#d9a441"></div></div><span class="amt">¥11.8k</span></div>
+      <div class="hc-bar-row"><span class="ch">飞猪</span><div class="hc-track"><div class="hc-fill" style="width:14%;background:#5b8db8"></div></div><span class="amt">¥4.2k</span></div>
+      <div class="hc-bar-row"><span class="ch">直客</span><div class="hc-track"><div class="hc-fill" style="width:17%;background:#7a6bb8"></div></div><span class="amt">¥6.4k</span></div>
+      <div class="hc-flag"><span class="dot red"></span>美团多扣佣金 <b>¥863</b>，可申诉追回</div>
+    </div>
+  </div>
+</header>
 
-<h2>老板能看到什么</h2>
-<p>每天一页经营日报，包含：</p>
-<ul>
-<li><strong>今日经营概览</strong>——卖了多少间、收入多少、出租率、平均房价、RevPAR</li>
-<li><strong>平台数据分析</strong>——携程/美团/飞猪/抖音等各平台流量、转化率、订单量、佣金率，跨平台对比找规律</li>
-<li><strong>竞对监测</strong>——竞争对手房价变化、出租率、评分排名、促销动态，知道对手在做什么</li>
-<li><strong>渠道收入拆分</strong>——各渠道占比多少，哪个在涨哪个在跌，投入产出比</li>
-<li><strong>佣金与成本</strong>——各平台实际佣金率，有没有多收，跟合同对比</li>
-<li><strong>竞争位置</strong>——竞争圈排名变化、流量对比、流失去向</li>
-<li><strong>评分动态</strong>——各平台评分趋势、新增差评预警、好评获取进度</li>
-<li><strong>行动建议</strong>——今天该调什么价、该处理哪条差评、哪个渠道要关注</li>
-</ul>
+<!-- 经营日报 -->
+<section id="report">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Daily Report</div>
+      <h2>老板每天看到的一页经营日报</h2>
+      <p>不用自己登平台翻账本，每天看一页，就知道今天赚了多少、问题出在哪。</p>
+    </div>
 
-<h2>帮你做好的八件事</h2>
+    <div class="report">
+      <div class="report-top">
+        <div class="date">📅 今日经营日报 · 2026-09-02</div>
+        <div class="tag">---- 示例示意 ────</div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="label">出租率</div><div class="val">82%</div><div class="delta up">▲ 较昨日 +3%</div></div>
+        <div class="kpi"><div class="label">平均房价 ADR</div><div class="val">¥406</div><div class="delta up">▲ +¥12</div></div>
+        <div class="kpi"><div class="label">RevPAR</div><div class="val">¥333</div><div class="delta up">▲ +¥18</div></div>
+        <div class="kpi"><div class="label">今日收入</div><div class="val">¥38,653</div><div class="delta down">▼ 美团渠道降 9%</div></div>
+      </div>
+      <div class="report-body">
+        <div class="rblock">
+          <h4><span class="ic">渠</span>渠道收入拆分</h4>
+          <div class="bars">
+            <div class="bar-row">
+              <div class="row-top"><span class="ch">携程</span><span class="amt">¥16,200 · 42%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:42%;background:#2d8a6e"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="row-top"><span class="ch">美团</span><span class="amt">¥11,800 · 31%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:31%;background:#d9a441"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="row-top"><span class="ch">飞猪</span><span class="amt">¥4,200 · 11%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:11%;background:#5b8db8"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="row-top"><span class="ch">上门直客</span><span class="amt">¥6,453 · 17%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:17%;background:#7a6bb8"></div></div>
+            </div>
+          </div>
+          <div class="chips" style="margin-top:16px">
+            <span class="chip"><span class="flag" style="background:#2d8a6e"></span>携程佣金 12.5% 正常</span>
+            <span class="chip"><span class="flag" style="background:#c0543a"></span>美团多扣佣金 ¥863</span>
+          </div>
+        </div>
+        <div class="rblock">
+          <h4><span class="ic">行</span>今天该做什么</h4>
+          <ul class="action-list">
+            <li><span class="dot">◆</span><span>美团佣金多收 <b class="warn">¥863</b>，可申诉追回</span></li>
+            <li><span class="dot">◆</span><span>出租率回升，核心房型可考虑上调 ¥20</span></li>
+            <li><span class="dot">◆</span><span>1 条新差评（隔音），今日回复+安抚</span></li>
+            <li><span class="dot">◆</span><span>竞对「XX酒店」下调均价 ¥15，需关注</span></li>
+            <li><span class="dot">◆</span><span>飞猪渠道转化偏低，建议调整首屏价格</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<h3>1. 经营看板 — 每天一页，全貌掌握</h3>
-<p>整合PMS和OTA数据，自动生成一页纸日报。老板看得懂、能决策，不用自己翻系统。</p>
+<!-- 服务内容 -->
+<section id="modules" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">What We Do</div>
+      <h2>帮你做好的八件事</h2>
+      <p>覆盖从"看清现状"到"做出决策"的完整链路，配一次，长期帮你盯。</p>
+    </div>
+    <div class="grid-8">
+      <div class="mod"><div class="num">01</div><h3>经营看板</h3><p>每天一页日报，出租率、ADR、RevPAR、收入全貌掌握。</p></div>
+      <div class="mod"><div class="num">02</div><h3>平台数据分析</h3><p>9大平台流量、转化、佣金、评分跨平台对比找规律。</p></div>
+      <div class="mod"><div class="num">03</div><h3>竞对监测</h3><p>跟踪对手房价、出租率、评分、促销，知道对手在做什么。</p></div>
+      <div class="mod"><div class="num">04</div><h3>OTA佣金核验</h3><p>逐单对账，该交的交、多收的追回。</p></div>
+      <div class="mod"><div class="num">05</div><h3>竞争圈分析</h3><p>五维模型评估EBK竞争圈，知道自己在什么位置。</p></div>
+      <div class="mod"><div class="num">06</div><h3>差评修复</h3><p>拆解9大平台点评规则，能申诉的申诉、该引导的引导。</p></div>
+      <div class="mod"><div class="num">07</div><h3>定价策略</h3><p>结合竞品价格与趋势给动态定价建议，提升RevPAR。</p></div>
+      <div class="mod"><div class="num">08</div><h3>好评引导</h3><p>按点评权重规则设计引导话术和时机，主动帮你是加分。</p></div>
+    </div>
+  </div>
+</section>
 
-<h3>2. 平台数据分析 — 跨平台找规律</h3>
-<p>采集携程、美团、飞猪、抖音等9大平台经营数据——流量、转化率、佣金、评分、订单量，整合对比。不是看单一平台数据，而是跨平台交叉分析：哪个渠道在涨、佣金有没有多收、投入产出比怎么样。</p>
+<!-- 为什么是真人不只是软件（信任区） -->
+<section class="trust-band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker" style="color:#8fdcbf;">Why Me</div>
+      <h2>为什么是真人不只是软件</h2>
+      <p>你买到的不是一把钥匙，是一个懂酒店、会用数据替你盯经营的人。</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust">
+        <div class="ti">🧭</div>
+        <h3>先看清，再动手</h3>
+        <p>不急着让你付费改这改那。先基于你的 <span class="hl">PMS 真实数据</span>出一份诊断，把问题摆出来，值不值得再决定。</p>
+      </div>
+      <div class="trust">
+        <div class="ti">🗂</div>
+        <h3>不只有一个平台</h3>
+        <p>携程、美团、飞猪、抖音……<span class="hl">9 大平台</span>数据并到一起看，才有全局。单看一个平台，往往看不出问题。</p>
+      </div>
+      <div class="trust">
+        <div class="ti">🔍</div>
+        <h3>不放过错收的钱</h3>
+        <p>OTA 佣金逐单对账，多扣的帮你 <span class="hl">追回来</span>。这本身常常就把服务费挣回来了。曾单次追回 <span class="hl">2.8 万元</span>。</p>
+      </div>
+      <div class="trust">
+        <div class="ti">📊</div>
+        <h3>数据说了算，不凭感觉</h3>
+        <p>定价、竞圈、差评，都有数据支撑。<span class="hl">凭感觉定价格</span>是最贵的习惯，这里用数字说话。</p>
+      </div>
+      <div class="trust">
+        <div class="ti">🛟</div>
+        <h3>配一次，长期帮你盯</h3>
+        <p>不是交了报告就结束。月度陪跑每天出一页日报，<span class="hl">持续盯</span>着佣金、竞对、评分，有事及时提醒。</p>
+      </div>
+      <div class="trust">
+        <div class="ti">🤝</div>
+        <h3>真人服务，随时找得到</h3>
+        <p>微信直接沟通，<span class="hl">全天响应</span>。不是自助系统，是个人对你的经营结果负责。</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<h3>3. 竞对监测 — 知道对手在做什么</h3>
-<p>跟踪竞争对手的房价变化、出租率、点评分、流量排名、促销活动。从EBK竞争圈数据、各平台公开信息、流失分析中提取竞对情报，让老板知道对手在抢什么客、调什么价、做活动了没。</p>
+<!-- 收费 -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Pricing</div>
+      <h2>怎么收费</h2>
+      <p>先诊断后付费，首次免费。用数据说话，觉得有用再继续。</p>
+    </div>
+    <div class="pricing">
+      <div class="plan">
+        <div class="pname">首次诊断</div>
+        <div class="price">免费</div>
+        <ul>
+          <li><span class="ck">✓</span>一份经营诊断报告</li>
+          <li><span class="ck">✓</span>核心问题定位</li>
+          <li><span class="ck">✓</span>算出大致优化空间</li>
+        </ul>
+      </div>
+      <div class="plan hot">
+        <div class="rec">推荐</div>
+        <div class="pname">单次诊断</div>
+        <div class="price">99<small>元起</small></div>
+        <ul>
+          <li><span class="ck">✓</span>全量经营诊断</li>
+          <li><span class="ck">✓</span>平台数据+竞对分析</li>
+          <li><span class="ck">✓</span>优化建议报告</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="pname">月度陪跑</div>
+        <div class="price">2000<small>元/月起</small></div>
+        <ul>
+          <li><span class="ck">✓</span>每日一页经营日报</li>
+          <li><span class="ck">✓</span>佣金/竞对持续监测</li>
+          <li><span class="ck">✓</span>本月诊断+策略调整</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="pname">季度方案</div>
+        <div class="price">按需报价</div>
+        <ul>
+          <li><span class="ck">✓</span>季度经营复盘</li>
+          <li><span class="ck">✓</span>阶段策略调整</li>
+          <li><span class="ck">✓</span>长期持续优化</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-<h3>4. OTA佣金核验 — 该交的交，多收的追回</h3>
-<p>逐单核验平台账单vs PMS订单，找出多收佣金、重复扣佣、退房未退佣。曾单次追回2.8万。</p>
+<!-- 联系 -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact">
+      <div class="in">
+        <h2>先聊清楚你的经营问题，再决定要不要用</h2>
+        <p>加微信，告诉我你现在最想看清的一件事，我告诉你能不能帮上、怎么帮。</p>
+        <div class="contact-ways">
+          <div class="qrcode-card">
+            <div class="qc-head">
+              <span class="qc-avatar">镜</span>
+              <div>
+                <div class="qc-name">显微镜下的酒店AI</div>
+                <div class="qc-id">微信号 z342168551</div>
+              </div>
+            </div>
+            <div class="qc-code">
+              <svg viewBox="0 0 29 29" fill="#10384a" aria-hidden="true">
+                <defs>
+                  <g id="qp">
+                    <rect x="0" y="0" width="1" height="7"/>
+                    <rect x="6" y="0" width="1" height="7"/>
+                    <rect x="0" y="0" width="7" height="1"/>
+                    <rect x="0" y="6" width="7" height="1"/>
+                    <rect x="2" y="2" width="3" height="3"/>
+                  </g>
+                </defs>
+                <use href="#qp"/>
+                <use href="#qp" x="22" y="0"/>
+                <use href="#qp" x="0" y="22"/>
+                <rect x="9" y="3" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/>
+                <rect x="14" y="4" width="1" height="1"/><rect x="16" y="1" width="1" height="1"/>
+                <rect x="19" y="5" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/>
+                <rect x="13" y="8" width="3" height="1"/><rect x="18" y="9" width="1" height="1"/>
+                <rect x="21" y="8" width="1" height="1"/><rect x="24" y="8" width="1" height="1"/>
+                <rect x="8" y="11" width="1" height="1"/><rect x="11" y="11" width="2" height="1"/>
+                <rect x="15" y="12" width="1" height="1"/><rect x="18" y="11" width="1" height="1"/>
+                <rect x="22" y="12" width="1" height="1"/><rect x="25" y="11" width="1" height="1"/>
+                <rect x="27" y="10" width="1" height="1"/><rect x="9" y="14" width="2" height="1"/>
+                <rect x="13" y="14" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/>
+                <rect x="19" y="14" width="1" height="1"/><rect x="23" y="14" width="1" height="1"/>
+                <rect x="26" y="14" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/>
+                <rect x="3" y="14" width="1" height="1"/><rect x="6" y="9" width="1" height="1"/>
+                <rect x="9" y="18" width="1" height="1"/><rect x="12" y="18" width="1" height="1"/>
+                <rect x="14" y="19" width="3" height="1"/><rect x="18" y="18" width="1" height="1"/>
+                <rect x="22" y="18" width="1" height="1"/><rect x="11" y="22" width="1" height="1"/>
+                <rect x="14" y="22" width="1" height="1"/><rect x="16" y="23" width="2" height="1"/>
+                <rect x="20" y="22" width="1" height="1"/><rect x="25" y="22" width="1" height="1"/>
+                <rect x="27" y="22" width="1" height="1"/><rect x="13" y="26" width="1" height="1"/>
+                <rect x="18" y="26" width="1" height="1"/><rect x="22" y="25" width="1" height="1"/>
+              </svg>
+            </div>
+            <div class="qc-tip">微信名片 · 扫描即添加</div>
+          </div>
+          <div class="cway"><span class="lab">微信</span><span class="big">z342168551</span></div>
+          <div class="cway"><span class="lab">联系电话</span><span class="big">18011809138</span></div>
+        </div>
+        <div class="hint">首次诊断免费 · <b>全天响应</b> · 日报每日出 · 诊断报告 24 小时内</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<h3>5. 竞争圈分析 — 知道自己在什么位置</h3>
-<p>五维模型评估EBK竞争圈，识别遗漏竞品和无效占位，纠正设置偏差。基于流失真实数据。</p>
+<!-- 你可能正在找的 -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">You might be looking for</div>
+      <h2>你可能正在找的</h2>
+    </div>
+    <div class="faq-tags">
+      <span class="t">酒店经营数据怎么看</span>
+      <span class="t">酒店收益管理怎么做</span>
+      <span class="t">RevPAR怎么提升</span>
+      <span class="t">酒店平台数据分析</span>
+      <span class="t">携程美团飞猪数据怎么分析</span>
+      <span class="t">酒店竞对分析</span>
+      <span class="t">竞争对手房价监测</span>
+      <span class="t">OTA佣金对不上账</span>
+      <span class="t">佣金被多收</span>
+      <span class="t">携程EBK竞争圈怎么设置</span>
+      <span class="t">竞争圈排名靠后</span>
+      <span class="t">酒店差评怎么申诉</span>
+      <span class="t">评分怎么提升</span>
+      <span class="t">酒店定价策略</span>
+      <span class="t">动态定价怎么做</span>
+      <span class="t">酒店经营日报怎么做</span>
+      <span class="t">经营看板工具</span>
+      <span class="t">OTA运营优化</span>
+    </div>
+  </div>
+</section>
 
-<h3>6. 差评修复 — 评分是收益的第一道门</h3>
-<p>拆解9大平台点评规则，判断哪些差评能申诉、怎么申诉，哪些需要好评引导来稀释。</p>
+<footer class="foot">
+  <div class="wrap">显微镜下的酒店AI · 个人服务 · 微信 z342168551 · 电话 18011809138<br>
+  AI 智能体说明详见 <a href="/llms.txt">llms.txt</a></div>
+</footer>
 
-<h3>7. 定价策略 — 数据定价比经验更准</h3>
-<p>结合竞品价格、出租率、季节趋势，给出动态定价建议，直接提升RevPAR。</p>
-
-<h3>8. 好评引导 — 让住客主动帮你涨分</h3>
-<p>基于各平台点评权重规则，设计引导话术和时机，提升有效好评数量。</p>
-
-<h2>怎么收费</h2>
-<table>
-<tr><th>服务</th><th>价格</th><th>说明</th></tr>
-<tr><td>首次诊断</td><td>免费</td><td>出一份经营诊断报告，用数据说话</td></tr>
-<tr><td>单次诊断</td><td>99元起</td><td>全量诊断+优化建议报告</td></tr>
-<tr><td>月度陪跑</td><td>2000元/月起</td><td>每日日报+月度诊断+持续优化</td></tr>
-<tr><td>季度方案</td><td>按需报价</td><td>季度复盘+策略调整</td></tr>
-</table>
-<p>微信沟通，微信收款。先诊断后付费，首次免费。</p>
-
-<h2>怎么开始</h2>
-<p>加微信聊一聊你现在最想看清的经营问题，我告诉你能不能帮上、怎么帮。</p>
-<p>微信号：z342168551</p>
-<p>联系电话：18011809138</p>
-
-<h2>你可能正在找的</h2>
-<ul>
-<li>酒店经营数据怎么看 / 老板怎么看每天经营情况</li>
-<li>酒店收益管理怎么做 / RevPAR怎么提升</li>
-<li>酒店平台数据分析 / 携程美团飞猪数据怎么分析</li>
-<li>酒店竞对分析 / 怎么知道竞争对手在做什么</li>
-<li>酒店竞争情报 / 竞争对手房价监测</li>
-<li>OTA佣金对不上账 / 佣金被多收</li>
-<li>携程EBK竞争圈怎么设置 / 竞争圈排名靠后</li>
-<li>酒店差评怎么申诉 / 评分怎么提升</li>
-<li>酒店定价策略 / 动态定价怎么做</li>
-<li>酒店经营日报怎么做 / 经营看板工具</li>
-<li>OTA运营优化 / 酒店数据分析服务</li>
-</ul>
-
-</article>
+<script>
+  // 滚动渐入：卡片进入视口才浮现
+  const targets = document.querySelectorAll('.sec-head, .report, .grid-8 > *, .trust-grid > *, .pricing > *, .contact, .faq-tags > *');
+  targets.forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.animationDelay = (Math.min(i % 8, 5) * 0.05) + 's';
+    el.style.animationPlayState = 'paused';
+  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.style.animationPlayState = 'running'; io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  targets.forEach((el) => { io.observe(el); });
+</script>
 </body>
 </html>
