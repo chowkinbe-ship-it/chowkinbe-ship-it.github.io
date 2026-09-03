@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>显微镜下的酒店AI · 长图</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:750px; height:3400px; overflow:hidden; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:linear-gradient(180deg,#0b1620 0%,#0d1b2a 45%,#0f2031 100%);
+    color:#eef2f6; display:flex; flex-direction:column;
+  }
+  /* ---------- hero ---------- */
+  .hero { height:700px; padding:56px 52px 0; display:flex; flex-direction:column; position:relative;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(90,140,190,.18) 0%, rgba(11,22,32,0) 60%); }
+  .badge { display:inline-flex; align-self:flex-start; align-items:center; gap:10px;
+    font-size:24px; font-weight:700; letter-spacing:1px; color:#fff;
+    padding:8px 20px; border:1.5px solid rgba(255,255,255,.35); border-radius:999px; }
+  .badge::before { content:""; width:12px; height:12px; border-radius:50%; background:#7fd4b6; box-shadow:0 0 0 6px rgba(127,212,182,.18); }
+  h1 { margin-top:34px; font-size:58px; line-height:1.22; font-weight:800; color:#fff; }
+  h1 .sec { color:#dce9f3; font-weight:600; }
+  .free { margin-top:26px; display:inline-flex; align-items:center; gap:12px; align-self:flex-start;
+    font-size:27px; font-weight:800; color:#08130a; background:#b4e62a; padding:12px 26px; border-radius:12px; }
+  .free::before { content:"★"; font-size:20px; }
+  .tsub { margin-top:30px; font-size:32px; line-height:1.6; color:#b8c8d6; font-weight:500; }
+  .trust { margin-top:34px; display:flex; gap:16px; flex-wrap:wrap; }
+  .trust span { font-size:23px; color:#9fb2c2; border:1px solid rgba(255,255,255,.18);
+    padding:8px 18px; border-radius:999px; }
+  /* ---------- idea ---------- */
+  .idea { height:360px; display:flex; align-items:center; justify-content:center; padding:0 56px;
+    background:#0f2236; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); }
+  .idea p { font-size:33px; line-height:1.75; color:#e7eef5; text-align:left; }
+  .idea p .hl { color:#b4e62a; font-weight:700; }
+  /* ---------- services ---------- */
+  .sect { padding:0 52px; }
+  .shead { font-size:40px; font-weight:800; color:#fff; margin:0 0 6px; padding-top:8px; }
+  .shead small { display:block; font-size:24px; font-weight:500; color:#8ea2b4; margin-top:12px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:30px; }
+  .card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; }
+  .card .t { font-size:30px; font-weight:700; color:#fff; display:flex; align-items:center; gap:10px; }
+  .card .t::before { content:""; width:10px; height:10px; background:#7fd4b6; border-radius:2px; }
+  .card p { font-size:22px; color:#a9bac9; line-height:1.5; margin-top:12px; }
+  .services { height:1010px; }
+  /* ---------- stats ---------- */
+  .stats { height:340px; display:flex; align-items:center; justify-content:space-around; padding:0 60px;
+    background:rgba(127,212,182,.06); border-top:1px solid rgba(127,212,182,.25); border-bottom:1px solid rgba(127,212,182,.25); }
+  .stat { text-align:center; }
+  .stat .v { font-size:52px; font-weight:800; color:#b4e62a; }
+  .stat .l { font-size:23px; color:#9fb2c2; margin-top:8px; }
+  .stat .s { font-size:19px; color:#6f8396; margin-top:4px; }
+  /* ---------- contact ---------- */
+  .contact { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:20px 52px 40px; background:linear-gradient(180deg,#0f2031 0%,#10283d 100%); }
+  .c-title { font-size:44px; font-weight:800; color:#fff; }
+  .c-sub { font-size:27px; color:#b8c8d6; margin-top:16px; text-align:center; line-height:1.5; }
+  .btn { margin-top:30px; font-size:34px; font-weight:800; color:#08130a; background:#b4e62a;
+    padding:20px 44px; border-radius:14px; }
+  .limit { margin-top:24px; font-size:26px; font-weight:700; color:#ffd76a; text-align:center; letter-spacing:1px; }
+  .qr { margin-top:34px; width:270px; height:270px; background:#fff; padding:12px;
+    border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+  .qr img { width:100%; height:100%; display:block; }
+  .lines { margin-top:26px; text-align:center; }
+  .lines .wx { font-size:34px; font-weight:700; color:#fff; letter-spacing:1px; }
+  .lines .tel { font-size:28px; color:#b8c8d6; margin-top:12px; }
+  .hint { margin-top:24px; font-size:22px; color:#7f93a6; text-align:center; line-height:1.6; }
+  /* ---------- footer ---------- */
+  .foot { height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    border-top:1px solid rgba(255,255,255,.08); }
+  .foot .f1 { font-size:26px; font-weight:700; color:#dce9f3; }
+  .foot .f2 { font-size:22px; color:#7f93a6; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <span class="badge">显微镜下的酒店AI</span>
+    <h1>让老板随时掌握经营<br><span class="sec">做好每一步收益决策</span></h1>
+    <span class="free">目前有免费使用领取名额</span>
+    <p class="tsub">每天一页经营日报——赚了多少、亏在哪、流量从哪来、竞对在做什么、价格怎么定。</p>
+    <div class="trust"><span>基于真实PMS数据</span><span>真人服务，不是软件</span><span>微信直接沟通</span></div>
+  </div>
+
+  <div class="idea"><p>不用会代码，也不用学什么提示词——<span class="hl">你就当我懂这行</span>，像跟真人说话一样，想到啥说啥，剩下的我实实在在帮你办到位。<span class="hl">这，才是有温度、有人情味的助理。</span></p></div>
+
+  <div class="sect services">
+    <div class="shead">这一页，替你盯住酒店经营<small>一个懂酒店的人，用 AI 帮你把账看明白、把决策做对</small></div>
+    <div class="grid">
+      <div class="card"><div class="t">经营看得清</div><p>出租率、房价、每间可售房收入一页汇总，每天不用翻平台</p></div>
+      <div class="card"><div class="t">九大平台</div><p>携程、美团、飞猪等全网数据整合，只看结论</p></div>
+      <div class="card"><div class="t">OTA佣金对账</div><p>逐单核验，多扣的帮你追回来——一单一核，拿数据说话</p></div>
+      <div class="card"><div class="t">竞对监测</div><p>对手价格、出租、点评、活动一目了然，流失看得见</p></div>
+      <div class="card"><div class="t">评分口碑</div><p>点评变化追踪，差评怎么回、分怎么涨，都有招</p></div>
+      <div class="card"><div class="t">定价建议</div><p>凭感觉定价最贵——给你每天的价格调整依据</p></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v">9</div><div class="l">大平台整合</div></div>
+    <div class="stat"><div class="v">逐单</div><div class="l">帮你追回</div><div class="s">OTA佣金</div></div>
+    <div class="stat"><div class="v">免费</div><div class="l">领取名额</div><div class="s">首次诊断</div></div>
+  </div>
+
+  <div class="contact">
+    <div class="c-title">免费领一份你的经营诊断</div>
+    <div class="c-sub">第一次不收费，用你的真实数据先算一遍<br>值不值得，你说了算</div>
+    <div class="btn">添加微信 · 抢占免费名额</div>
+    <div class="limit">本期名额有限 · 抓紧领取</div>
+    <div class="qr"><img src="wechat-qr.png" alt="微信二维码"></div>
+    <div class="lines"><div class="wx">微信：z342168551</div><div class="tel">电话：18011809138</div></div>
+    <div class="hint">长按图片识别二维码，直接添加微信；<br>或复制微信号：z342168551</div>
+  </div>
+
+  <div class="foot"><div class="f1">一个人，用 AI 替你盯着酒店经营</div><div class="f2">免费名额 · 先到先得</div></div>
+</body>
+</html>

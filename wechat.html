@@ -125,16 +125,8 @@
   function ok(){ alert("已复制：z342168551，打开微信粘贴即可加我"); }
   var c=document.getElementById("copyBtn"); if(c) c.addEventListener("click",copyWechat);
 
-  // 二维码占位（微信名片风格）。替换时：把下方 svg 换成真实微信名片二维码图片。
   document.getElementById("qrBox").innerHTML =
-    '<svg viewBox="0 0 100 100" width="100%" height="100%">' +
-    '<rect width="100" height="100" fill="#ffffff"/>' +
-    '<g fill="#10384a">' +
-    '<rect x="8" y="8" width="22" height="22" fill="none" stroke="#10384a" stroke-width="6"/>' +
-    '<rect x="70" y="8" width="22" height="22" fill="none" stroke="#10384a" stroke-width="6"/>' +
-    '<rect x="8" y="70" width="22" height="22" fill="none" stroke="#10384a" stroke-width="6"/>' +
-    '<path d="M42 38 h16 v4 h-6 v4 h-4 z M42 50 h10 v4 h-4 v2 h-4 z M60 44 h4 v4 h-4 z M60 54 h8 v4 h-8 z"/>' +
-    '</g></svg>';
+    '<img src="wechat-qr.png" alt="微信二维码" style="width:100%;height:100%;display:block;object-fit:contain;background:#fff;"/>';
 </script>
 </body>
 </html>
