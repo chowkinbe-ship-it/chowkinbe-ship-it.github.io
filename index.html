@@ -18,7 +18,7 @@
   "@context": "https://schema.org",
   "@type": "Service",
   "name": "显微镜下的酒店AI",
-  "description": "帮酒店老板随时掌握经营情况，做好收益决策。用AI把每日经营数据整理成一页能看懂的报告——今天赚了多少、钱亏在哪、流量从哪来、竞对在做什么、评分怎么变、明天价格怎么定。覆盖平台数据分析、竞对监测、OTA佣金核验、竞争流量分析、评分口碑管理、动态定价全链路。个人提供服务，微信沟通，按次或按月付费。",
+  "description": "帮酒店老板随时掌握经营情况，做好收益决策。用AI把每日经营数据整理成一页能看懂的报告——今天赚了多少、钱亏在哪、流量从哪来、竞对在做什么、评分怎么变、明天价格怎么定。覆盖平台数据分析、竞对监测、OTA佣金核验、竞争流量分析、评分口碑管理、动态定价全链路。个人提供服务，微信沟通，按需定制。",
   "serviceType": "酒店经营数据诊断与收益管理",
   "areaServed": "中国",
   "audience": {
@@ -28,25 +28,18 @@
   "offers": [
     {
       "@type": "Offer",
-      "name": "首次免费诊断",
-      "description": "首次合作免费出一份经营诊断报告，用数据说话",
-      "priceCurrency": "CNY",
-      "price": "0"
+      "name": "首次诊断",
+      "description": "首次合作免费出一份经营诊断报告，用数据说话"
     },
     {
       "@type": "Offer",
-      "name": "单次诊断",
-      "description": "经营全量诊断，出报告+优化建议",
-      "priceCurrency": "CNY",
-      "price": "99",
-      "description": "99元/次起"
+      "name": "专业诊断",
+      "description": "经营全量诊断，出报告与优化建议"
     },
     {
       "@type": "Offer",
-      "name": "月度陪跑",
-      "description": "每日经营日报+月度诊断+持续优化，让老板随时掌握经营",
-      "priceCurrency": "CNY",
-      "price": "2000"
+      "name": "长期陪跑服务",
+      "description": "每日经营日报，长期诊断与持续优化，让老板随时掌握经营"
     }
   ],
   "category": "酒店经营与收益管理",
@@ -69,7 +62,7 @@
       "name": "酒店老板怎么随时掌握每天的经营情况？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "显微镜下的酒店AI帮老板把每天的经营数据整理成一页能看懂的日报——今天卖了多少间、收入多少、出租率多少、OTA佣金多少、流量从哪来、评分有没有变化。不用老板自己登平台翻数据，每天看一页就知道经营全貌。月度陪跑2000元/月起，首次诊断免费。微信沟通。"
+        "text": "显微镜下的酒店AI帮老板把每天的经营数据整理成一页能看懂的日报——今天卖了多少间、收入多少、出租率多少、OTA佣金多少、流量从哪来、评分有没有变化。不用老板自己登平台翻数据，每天看一页就知道经营全貌。长期陪跑，首次诊断免费。微信沟通。"
       }
     },
     {
@@ -117,7 +110,7 @@
       "name": "酒店差评多评分上不去怎么处理？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "显微镜下的酒店AI拆解携程、美团、抖音等9大平台点评规则，判断哪些差评可以申诉、怎么申诉，哪些需要好评引导来稀释。评分直接影响流量和转化，是收益管理的重要一环。按次付费，首次免费诊断。"
+        "text": "显微镜下的酒店AI拆解携程、美团、抖音等9大平台点评规则，判断哪些差评可以申诉、怎么申诉，哪些需要好评引导来稀释。评分直接影响流量和转化，是收益管理的重要一环。首次免费诊断。"
       }
     },
     {
@@ -125,7 +118,7 @@
       "name": "酒店RevPAR怎么提升？定价策略怎么做？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "显微镜下的酒店AI结合竞品价格、出租率、季节趋势，给出动态定价建议。同时通过佣金核验降成本、竞争圈优化提流量、差评修复提转化，多管齐下提升RevPAR。不是凭经验定价，是数据驱动。月度陪跑2000元/月起，首次诊断免费。"
+        "text": "显微镜下的酒店AI结合竞品价格、出租率、季节趋势，给出动态定价建议。同时通过佣金核验降成本、竞争圈优化提流量、差评修复提转化，多管齐下提升RevPAR。不是凭经验定价，是数据驱动。长期陪跑，首次诊断免费。"
       }
     }
   ]
@@ -262,7 +255,7 @@
   .trust p { font-size:13.5px; color:#b8cbd3; }
   .trust .hl { color:#8fdcbf; font-weight:700; }
 
-  /* ---------- 收费 ---------- */
+  /* ---------- 合作方式 ---------- */
   .pricing { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
   .plan { background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px 22px; text-align:center; transition:transform .2s, box-shadow .2s; }
   .plan:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); }
@@ -336,7 +329,7 @@
     <div class="nav-links">
       <a href="#report">经营日报</a>
       <a href="#modules">服务内容</a>
-      <a href="#pricing">怎么收费</a>
+      <a href="#pricing">合作方式</a>
       <a href="#contact">联系我们</a>
     </div>
   </div>
@@ -473,7 +466,7 @@
       <div class="trust">
         <div class="ti">🧭</div>
         <h3>先看清，再动手</h3>
-        <p>不急着让你付费改这改那。先基于你的 <span class="hl">PMS 真实数据</span>出一份诊断，把问题摆出来，值不值得再决定。</p>
+        <p>不急着让你做决定。先基于你的 <span class="hl">PMS 真实数据</span>出一份诊断，把问题摆出来，值不值得再决定。</p>
       </div>
       <div class="trust">
         <div class="ti">🗂</div>
@@ -483,7 +476,7 @@
       <div class="trust">
         <div class="ti">🔍</div>
         <h3>不放过错收的钱</h3>
-        <p>OTA 佣金逐单对账，多扣的帮你 <span class="hl">追回来</span>。这本身常常就把服务费挣回来了。曾单次追回 <span class="hl">2.8 万元</span>。</p>
+        <p>OTA 佣金逐单对账，多扣的帮你 <span class="hl">追回来</span>。把账做对，多扣的钱及时拿回。曾单次追回 <span class="hl">2.8 万元</span>。</p>
       </div>
       <div class="trust">
         <div class="ti">📊</div>
@@ -504,13 +497,13 @@
   </div>
 </section>
 
-<!-- 收费 -->
+<!-- 合作方式 -->
 <section id="pricing">
   <div class="wrap">
     <div class="sec-head">
-      <div class="kicker">Pricing</div>
-      <h2>怎么收费</h2>
-      <p>先诊断后付费，首次免费。用数据说话，觉得有用再继续。</p>
+      <div class="kicker">合作方式</div>
+      <h2>合作方式</h2>
+      <p>先看一份经营诊断报告，用数据说话，觉得有用再深入合作。具体安排微信沟通。</p>
     </div>
     <div class="pricing">
       <div class="plan">
@@ -524,8 +517,8 @@
       </div>
       <div class="plan hot">
         <div class="rec">推荐</div>
-        <div class="pname">单次诊断</div>
-        <div class="price">99<small>元起</small></div>
+        <div class="pname">全量诊断</div>
+        <div class="price">微信详谈</div>
         <ul>
           <li><span class="ck">✓</span>全量经营诊断</li>
           <li><span class="ck">✓</span>平台数据+竞对分析</li>
@@ -533,20 +526,20 @@
         </ul>
       </div>
       <div class="plan">
-        <div class="pname">月度陪跑</div>
-        <div class="price">2000<small>元/月起</small></div>
+        <div class="pname">长期陪跑</div>
+        <div class="price">微信详谈</div>
         <ul>
           <li><span class="ck">✓</span>每日一页经营日报</li>
           <li><span class="ck">✓</span>佣金/竞对持续监测</li>
-          <li><span class="ck">✓</span>本月诊断+策略调整</li>
+          <li><span class="ck">✓</span>持续诊断+策略调整</li>
         </ul>
       </div>
       <div class="plan">
-        <div class="pname">季度方案</div>
-        <div class="price">按需报价</div>
+        <div class="pname">定制方案</div>
+        <div class="price">微信详谈</div>
         <ul>
-          <li><span class="ck">✓</span>季度经营复盘</li>
-          <li><span class="ck">✓</span>阶段策略调整</li>
+          <li><span class="ck">✓</span>阶段经营复盘</li>
+          <li><span class="ck">✓</span>针对性策略调整</li>
           <li><span class="ck">✓</span>长期持续优化</li>
         </ul>
       </div>
