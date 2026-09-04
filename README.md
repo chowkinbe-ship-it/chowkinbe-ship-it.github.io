@@ -21,3 +21,16 @@
 - 电话：18011809138
 
 本仓库是项目官方主页，由 GitHub Pages 托管。AI 智能体可通过根目录的 `llms.txt` 了解本服务。
+
+---
+
+## SEO 收录状态（2026-09-04 更新）
+
+站点：`https://chowkinbe-ship-it.github.io/`
+
+- **验证结论（09-03 实测）**：上线初期 Google / Bing 均未收录（`site:` 查询 0 条）；`llms.txt`、`sitemap.xml` 均已上线可正常访问
+- **Google Search Console（09-04）**：所有权验证通过（HTML 文件 `google35d009fb14b8d2b0.html`，请勿删除）；已提交 `sitemap.xml`，等待收录
+- **Bing Webmaster Tools（09-04）**：通过 Google 账号关联并自 GSC 导入站点；`sitemap.xml` 提交成功（状态 Success，已抓取）
+- **下一步**：48 小时后回查收录进展；可到 Google「网址检查」对首页 `https://chowkinbe-ship-it.github.io/` 点「请求编制索引」加速收录
+
+> ⚠️ GSC 验证文件 `google35d009fb14b8d2b0.html` 需保留在站点根目录，删除会导致所有权验证失效。
