@@ -13,21 +13,24 @@
     color:#eef2f6; display:flex; flex-direction:column;
   }
   /* ---------- hero ---------- */
-  .hero { height:700px; padding:56px 52px 0; display:flex; flex-direction:column; position:relative;
+  .hero { height:740px; padding:52px 52px 0; display:flex; flex-direction:column; position:relative;
     background:radial-gradient(120% 90% at 50% 0%, rgba(90,140,190,.18) 0%, rgba(11,22,32,0) 60%); }
   .badge { display:inline-flex; align-self:flex-start; align-items:center; gap:10px;
     font-size:24px; font-weight:700; letter-spacing:1px; color:#fff;
     padding:8px 20px; border:1.5px solid rgba(255,255,255,.35); border-radius:999px; }
   .badge::before { content:""; width:12px; height:12px; border-radius:50%; background:#7fd4b6; box-shadow:0 0 0 6px rgba(127,212,182,.18); }
-  h1 { margin-top:34px; font-size:58px; line-height:1.22; font-weight:800; color:#fff; }
+  .limited-top { margin-top:22px; display:inline-flex; align-items:center; gap:8px; align-self:flex-start;
+    font-size:24px; font-weight:800; letter-spacing:2px; color:#ffd76a;
+    padding:8px 20px; border:1.5px dashed rgba(255,215,106,.55); border-radius:999px; }
+  h1 { margin-top:26px; font-size:52px; line-height:1.2; font-weight:800; color:#fff; }
   h1 .sec { color:#dce9f3; font-weight:600; }
-  .free { margin-top:26px; display:inline-flex; align-items:center; gap:12px; align-self:flex-start;
-    font-size:27px; font-weight:800; color:#08130a; background:#b4e62a; padding:12px 26px; border-radius:12px; }
+  .free { margin-top:24px; display:inline-flex; align-items:center; gap:12px; align-self:flex-start;
+    font-size:28px; font-weight:800; color:#08130a; background:#b4e62a; padding:12px 26px; border-radius:12px; }
   .free::before { content:"★"; font-size:20px; }
-  .tsub { margin-top:30px; font-size:32px; line-height:1.6; color:#b8c8d6; font-weight:500; }
-  .trust { margin-top:34px; display:flex; gap:16px; flex-wrap:wrap; }
-  .trust span { font-size:23px; color:#9fb2c2; border:1px solid rgba(255,255,255,.18);
-    padding:8px 18px; border-radius:999px; }
+  .tsub { margin-top:28px; font-size:31px; line-height:1.6; color:#b8c8d6; font-weight:500; }
+  .trust { margin-top:30px; display:flex; gap:14px; flex-wrap:wrap; }
+  .trust span { font-size:22px; color:#9fb2c2; border:1px solid rgba(255,255,255,.18);
+    padding:8px 16px; border-radius:999px; }
   /* ---------- idea ---------- */
   .idea { height:360px; display:flex; align-items:center; justify-content:center; padding:0 56px;
     background:#0f2236; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); }
@@ -56,9 +59,9 @@
   .c-title { font-size:44px; font-weight:800; color:#fff; }
   .c-sub { font-size:27px; color:#b8c8d6; margin-top:16px; text-align:center; line-height:1.5; }
   .btn { margin-top:30px; font-size:34px; font-weight:800; color:#08130a; background:#b4e62a;
-    padding:20px 44px; border-radius:14px; }
-  .limit { margin-top:24px; font-size:26px; font-weight:700; color:#ffd76a; text-align:center; letter-spacing:1px; }
-  .qr { margin-top:34px; width:270px; height:270px; background:#fff; padding:12px;
+    padding:20px 44px; border-radius:14px; box-shadow:0 8px 24px rgba(180,230,42,.25); }
+  .limit { margin-top:24px; font-size:26px; font-weight:800; color:#ff6b6b; text-align:center; letter-spacing:1px; }
+  .qr { margin-top:30px; width:300px; height:300px; background:#fff; padding:14px;
     border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.25); }
   .qr img { width:100%; height:100%; display:block; }
   .lines { margin-top:26px; text-align:center; }
@@ -75,10 +78,11 @@
 <body>
   <div class="hero">
     <span class="badge">显微镜下的酒店AI</span>
-    <h1>让老板随时掌握经营<br><span class="sec">做好每一步收益决策</span></h1>
-    <span class="free">目前有免费使用领取名额</span>
+    <span class="limited-top">限量邀请 · 免费体验</span>
+    <h1>邀请酒店老板<br><span class="sec">免费获得「满血版」</span></h1>
+    <span class="free">本期开放免费体验名额</span>
     <p class="tsub">每天一页经营日报——赚了多少、亏在哪、流量从哪来、竞对在做什么、价格怎么定。</p>
-    <div class="trust"><span>基于真实PMS数据</span><span>真人服务，不是软件</span><span>微信直接沟通</span></div>
+    <div class="trust"><span>不用花一分钱</span><span>满血功能全开放</span><span>名额有限·先到先得</span></div>
   </div>
 
   <div class="idea"><p>不用会代码，也不用学什么提示词——<span class="hl">你就当我懂这行</span>，像跟真人说话一样，想到啥说啥，剩下的我实实在在帮你办到位。<span class="hl">这，才是有温度、有人情味的助理。</span></p></div>
@@ -98,19 +102,19 @@
   <div class="stats">
     <div class="stat"><div class="v">多平台</div><div class="l">跨平台整合</div></div>
     <div class="stat"><div class="v">逐单</div><div class="l">帮你追回</div><div class="s">OTA佣金</div></div>
-    <div class="stat"><div class="v">免费</div><div class="l">领取名额</div><div class="s">首次诊断</div></div>
+    <div class="stat"><div class="v">免费</div><div class="l">满血体验</div><div class="s">功能全开放</div></div>
   </div>
 
   <div class="contact">
-    <div class="c-title">免费领一份你的经营诊断</div>
-    <div class="c-sub">第一次不收费，用你的真实数据先算一遍<br>值不值得，你说了算</div>
-    <div class="btn">添加微信 · 抢占免费名额</div>
-    <div class="limit">本期名额有限 · 抓紧领取</div>
+    <div class="c-title">免费体验「满血版」</div>
+    <div class="c-sub">一次性免费体验全部功能<br>适不适合，你亲手用一次就知道</div>
+    <div class="btn">添加微信 · 抢占免费体验名额</div>
+    <div class="limit">名额有限 · 先到先得 · 本期仅开放少量名额</div>
     <div class="qr"><img src="wechat-qr.png" alt="微信二维码"></div>
     <div class="lines"><div class="wx">微信：z342168551</div><div class="tel">电话：18011809138</div></div>
     <div class="hint">长按图片识别二维码，直接添加微信；<br>或复制微信号：z342168551</div>
   </div>
 
-  <div class="foot"><div class="f1">一个人，用 AI 替你盯着酒店经营</div><div class="f2">免费名额 · 先到先得</div></div>
+  <div class="foot"><div class="f1">一个人，用 AI 替你盯着酒店经营</div><div class="f2">免费体验满血版 · 名额有限 · 先到先得</div></div>
 </body>
 </html>
