@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="format-detection" content="telephone=yes,address=no,email=no">
 <title>免费首诊 · 显微镜下的酒店AI</title>
-<meta name="description" content="免费帮你把每天的经营数据整理成一页能看懂的诊断报告，看清竞对在做什么、佣金有没有多收、价格该怎么定。真人服务，微信沟通。名额有限。">
+<meta name="description" content="免费帮你盯周边酒店的房价和各平台流量，把谁在跟你抢客、你漏在哪理成一页。不用登后台、不用先给数据。真人服务，微信沟通。名额有限。">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body { font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; background:#f4f6f5; color:#2c3e46; line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:env(safe-area-inset-bottom); }
@@ -98,20 +98,20 @@
 <header class="hero">
   <div class="in">
     <span class="badge"><span class="dot"></span>显微镜下的酒店AI</span>
-    <h1>免费领一份<br>你的<span class="hl">经营诊断报告</span></h1>
-    <p class="lead">把你每天的经营数据，整理成一页看得懂的诊断——今天卖了多少房、竞对在调什么价、佣金有没有多收、价格该不该动。</p>
+    <h1>免费领一份<br>你周边的<span class="hl">流量与竞对诊断</span></h1>
+    <p class="lead">不用你登后台、不用先给数据。我盯着周边酒店的房价和你家在各平台的流量，把「谁在跟你抢客、你漏在哪」理成一页给你。</p>
     <span class="counter">本月首批体验名额 <b>剩 6 个</b></span>
   </div>
 </header>
 
 <!-- 价值点 -->
 <section class="card">
-  <h2>一份报告，看清四件你天天想知道的事</h2>
+  <h2>一份诊断，看清周边酒店怎么抢你的生意</h2>
   <div class="pts">
-    <div class="pt"><div class="ic">1</div><div class="t"><b>今日生意全貌</b><br><span>卖了间、收入、出租率、RevPAR，一页看清</span></div></div>
-    <div class="pt"><div class="ic">2</div><div class="t"><b>竞对在调什么价</b><br><span>周边酒店房价怎么变，你知道对手在抢什么客</span></div></div>
-    <div class="pt"><div class="ic">3</div><div class="t"><b>佣金有没有多收</b><br><span>各平台实际扣佣率，多收的帮你指出并申诉</span></div></div>
-    <div class="pt"><div class="ic">4</div><div class="t"><b>明天价该怎么定</b><br><span>基于竞品和你自己的数据，给出可执行建议</span></div></div>
+    <div class="pt"><div class="ic">1</div><div class="t"><b>周边房价 · 有人帮你盯</b><br><span>附近酒店的实时房价和涨跌，不用你天天刷 APP</span></div></div>
+    <div class="pt"><div class="ic">2</div><div class="t"><b>谁在跟你抢客</b><br><span>同商圈同定位的店，单量和流量排到哪，你的客流向哪了</span></div></div>
+    <div class="pt"><div class="ic">3</div><div class="t"><b>平台流量 · 一眼看漏</b><br><span>携程/美团/飞猪/抖音你家点在哪，哪个人气掉得凶</span></div></div>
+    <div class="pt"><div class="ic">4</div><div class="t"><b>定价 · 给你依据</b><br><span>结合对手和你客流给出当天建议价，不比凭感觉差</span></div></div>
   </div>
 </section>
 
@@ -179,7 +179,7 @@
   <h3>为什么找我，不是买软件？</h3>
   <ul>
     <li>真人 + AI 帮你分析出方案，不是丢个系统给你自己折腾</li>
-    <li>基于你 PMS 的真实数据，不是平台单方面说的</li>
+    <li>我盯公开渠道的竞对和流量，不用你先登后台给数据</li>
     <li>先免费诊断再付费，用数据说话，不合适不强求</li>
     <li>就有经营问题直接微信问，当天响应</li>
   </ul>
@@ -214,7 +214,7 @@
     if(p.length===0){ alert("请至少选一个卖房平台"); return; }
 
     var msg = "你好周哥，我是「" + hotel + "」的" + name + "，店在" + city + "，" +
-              "主要做" + p.join("、") + "，想约一个免费首诊，帮我看看经营数据和竞对情况。" +
+              "主要做" + p.join("、") + "，想约一个免费首诊，帮我看看周边竞对和流量情况。" +
               "微信联系我加这里：" + wx;
 
     document.getElementById("msgText").textContent = msg;
