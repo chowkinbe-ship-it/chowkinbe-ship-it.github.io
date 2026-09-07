@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=yes,address=no,email=no">
+<title>免费首诊 · 显微镜下的酒店AI</title>
+<meta name="description" content="免费帮你把每天的经营数据整理成一页能看懂的诊断报告，看清竞对在做什么、佣金有没有多收、价格该怎么定。真人服务，微信沟通。名额有限。">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; background:#f4f6f5; color:#2c3e46; line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:env(safe-area-inset-bottom); }
+  button,input,label { -webkit-tap-highlight-color:transparent; font-family:inherit; }
+
+  /* 顶部状态栏模拟 */
+  .wx-bar { background:#111111; color:#cfd6d3; font-size:12px; text-align:center; padding:8px 16px; letter-spacing:.5px; }
+  .wx-bar b { color:#fff; font-weight:600; }
+
+  /* Hero */
+  .hero { background:radial-gradient(900px 480px at 15% -10%,#1f5f71 0%,#0a2733 58%,#071a22 100%); color:#fff; padding:34px 22px 30px; position:relative; overflow:hidden; }
+  .hero::after { content:""; position:absolute; inset:0; background:radial-gradient(420px 260px at 96% 4%,rgba(217,164,65,.16),transparent 70%),radial-gradient(280px 200px at 0% 96%,rgba(45,138,110,.18),transparent 70%); pointer-events:none; }
+  .hero .in { position:relative; z-index:1; }
+  .badge { display:inline-flex; align-items:center; gap:7px; font-size:12px; color:#a6e0cb; border:1px solid rgba(159,216,195,.38); background:rgba(159,216,195,.07); padding:5px 13px; border-radius:30px; letter-spacing:.4px; }
+  .badge .dot { width:6px; height:6px; border-radius:50%; background:#7fd4b6; box-shadow:0 0 0 3px rgba(127,212,182,.2); }
+  .hero h1 { font-size:25px; line-height:1.35; font-weight:800; margin-top:15px; letter-spacing:.3px; }
+  .hero h1 .hl { color:#7fd4b6; }
+  .hero p.lead { margin-top:11px; font-size:14px; color:#d5e4de; }
+  .counter { display:inline-flex; align-items:center; gap:6px; margin-top:14px; font-size:12px; color:#e8c378; background:rgba(217,164,65,.1); border:1px solid rgba(217,164,65,.3); padding:5px 12px; border-radius:30px; }
+  .counter b { font-weight:800; }
+
+  /* 价值点 */
+  .card { background:#fff; border-radius:16px; padding:20px; margin:14px; box-shadow:0 18px 44px -28px rgba(16,56,74,.3); }
+  .card h2 { font-size:16.5px; color:#0a2733; font-weight:800; }
+  .pts { margin-top:13px; display:grid; gap:11px; }
+  .pt { display:flex; gap:11px; align-items:flex-start; }
+  .pt .ic { flex:none; width:26px; height:26px; border-radius:8px; background:#082f40; color:#7fd4b6; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .pt .t { font-size:13.5px; }
+  .pt .t b { color:#0a2733; font-weight:700; }
+  .pt .t span { color:#6b7a80; font-size:12.5px; }
+
+  /* 表单 */
+  .form-card { background:#fff; border-radius:16px; padding:22px 20px; margin:14px; box-shadow:0 20px 46px -28px rgba(16,56,74,.34); }
+  .form-card .form-head { text-align:center; margin-bottom:16px; }
+  .form-card .form-head h2 { font-size:19px; color:#0a2733; font-weight:800; }
+  .form-card .form-head p { font-size:12.5px; color:#6b7a80; margin-top:5px; }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:13px; font-weight:700; color:#0a2733; margin-bottom:6px; }
+  .field label .req { color:#c96a3a; margin-left:2px; }
+  .field input[type=text] { width:100%; padding:13px 14px; border:1.5px solid #dfe6e1; border-radius:11px; font-size:15px; color:#2c3e46; background:#fafbfa; }
+  .field input[type=text]:focus { outline:none; border-color:#1f5f71; background:#fff; box-shadow:0 0 0 3px rgba(31,95,113,.1); }
+  .field input[type=text]::placeholder { color:#a7b4ad; }
+
+  .chips { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  .chip { position:relative; }
+  .chip input { position:absolute; opacity:0; }
+  .chip label { display:flex; align-items:center; justify-content:center; padding:11px 8px; border:1.5px solid #dfe6e1; border-radius:11px; font-size:13.5px; font-weight:600; color:#4a5a60; background:#fafbfa; cursor:pointer; transition:all .12s; margin:0; }
+  .chip input:checked + label { border-color:#1f5f71; color:#0a2733; background:#eef5f2; font-weight:700; }
+  .chip input:checked + label::after { content:"✓ "; }
+
+  .btn-submit { width:100%; padding:15px; border:none; border-radius:13px; font-size:16px; font-weight:800; color:#10384a; background:linear-gradient(180deg,#e6b655,#d9a441); box-shadow:0 10px 24px rgba(217,164,65,.42); margin-top:6px; cursor:pointer; letter-spacing:.5px; }
+  .btn-submit:active { transform:scale(.98); }
+  .form-note { text-align:center; font-size:11.5px; color:#9aa6a0; margin-top:11px; }
+
+  /* 成功态 */
+  #result { display:none; }
+  #result.show { display:block; }
+  .success { background:#fff; border-radius:16px; padding:22px; margin:14px; box-shadow:0 20px 46px -28px rgba(16,56,74,.34); text-align:center; }
+  .success .check { width:56px; height:56px; margin:4px auto 12px; border-radius:50%; background:#e6f4ee; display:flex; align-items:center; justify-content:center; font-size:28px; color:#1a6650; }
+  .success h3 { font-size:18px; color:#0a2733; font-weight:800; }
+  .success p { font-size:13px; color:#5a6a70; margin-top:7px; }
+  .msg-area { background:#f4f6f5; border:1.5px dashed #cfd8d3; border-radius:12px; padding:14px; margin:14px 0; text-align:left; font-size:13px; color:#35484f; line-height:1.7; }
+  .msg-area .msg-label { font-size:11px; color:#8a9791; margin-bottom:6px; font-weight:600; }
+  .btn-row { display:grid; gap:10px; }
+  .btn-copy { padding:14px; border:none; border-radius:12px; font-size:15px; font-weight:800; color:#fff; background:#1a6650; cursor:pointer; }
+  .btn-copy:active { transform:scale(.98); }
+  .btn-wechat { padding:14px; border-radius:12px; font-size:15px; font-weight:800; background:linear-gradient(180deg,#e2b14f,#d9a441); color:#10384a; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .qr-box { width:130px; height:130px; margin:16px auto 8px; border:1.5px solid #e3eae6; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#fff; overflow:hidden; }
+  .qr-box img { width:100%; height:100%; object-fit:contain; }
+  .wechat-id { text-align:center; font-size:15px; color:#0a2733; font-weight:800; margin-top:8px; }
+  .wechat-hint { text-align:center; font-size:12px; color:#6b7a80; margin-top:4px; }
+  .back-link { text-align:center; margin:16px 0 22px; }
+  .back-link a { font-size:13px; color:#1f5f71; text-decoration:none; font-weight:600; }
+
+  .trust { background:#fff; border-radius:16px; padding:18px; margin:14px; box-shadow:0 18px 44px -28px rgba(16,56,74,.3); }
+  .trust h3 { font-size:14.5px; color:#0a2733; font-weight:800; margin-bottom:10px; }
+  .trust ul { list-style:none; }
+  .trust li { font-size:12.5px; color:#4a5a60; padding:5px 0 5px 22px; position:relative; }
+  .trust li::before { content:"✓"; position:absolute; left:2px; color:#1a6650; font-weight:800; }
+  .trust .note { margin-top:10px; font-size:11.5px; color:#8a9791; border-top:1px dashed #dfe6e1; padding-top:10px; }
+
+  .footnote { text-align:center; font-size:11px; color:#a7b4ad; padding:8px 20px 24px; }
+</style>
+</head>
+<body>
+
+<div class="wx-bar">微信安全浏览 · <b>免费首诊</b></div>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="in">
+    <span class="badge"><span class="dot"></span>显微镜下的酒店AI</span>
+    <h1>免费领一份<br>你的<span class="hl">经营诊断报告</span></h1>
+    <p class="lead">把你每天的经营数据，整理成一页看得懂的诊断——今天卖了多少房、竞对在调什么价、佣金有没有多收、价格该不该动。</p>
+    <span class="counter">本月首批体验名额 <b>剩 6 个</b></span>
+  </div>
+</header>
+
+<!-- 价值点 -->
+<section class="card">
+  <h2>一份报告，看清四件你天天想知道的事</h2>
+  <div class="pts">
+    <div class="pt"><div class="ic">1</div><div class="t"><b>今日生意全貌</b><br><span>卖了间、收入、出租率、RevPAR，一页看清</span></div></div>
+    <div class="pt"><div class="ic">2</div><div class="t"><b>竞对在调什么价</b><br><span>周边酒店房价怎么变，你知道对手在抢什么客</span></div></div>
+    <div class="pt"><div class="ic">3</div><div class="t"><b>佣金有没有多收</b><br><span>各平台实际扣佣率，多收的帮你指出并申诉</span></div></div>
+    <div class="pt"><div class="ic">4</div><div class="t"><b>明天价该怎么定</b><br><span>基于竞品和你自己的数据，给出可执行建议</span></div></div>
+  </div>
+</section>
+
+<!-- 表单 -->
+<section class="form-card" id="formCard">
+  <div class="form-head">
+    <h2>约一约，1 分钟</h2>
+    <p>填完自动生成一段自我介绍，加微信发给我就能开始</p>
+  </div>
+
+  <div class="field">
+    <label>酒店 / 民宿名<span class="req">*</span></label>
+    <input type="text" id="fHotel" placeholder="例如：琶洲某某大酒店" autocomplete="organization">
+  </div>
+  <div class="field">
+    <label>所在城市<span class="req">*</span></label>
+    <input type="text" id="fCity" placeholder="例如：广州" autocomplete="address-level2">
+  </div>
+  <div class="field">
+    <label>主要在哪个平台卖<span class="req">*</span></label>
+    <div class="chips">
+      <div class="chip"><input type="checkbox" id="p1" value="携程"><label for="p1">携程</label></div>
+      <div class="chip"><input type="checkbox" id="p2" value="美团"><label for="p2">美团</label></div>
+      <div class="chip"><input type="checkbox" id="p3" value="飞猪"><label for="p3">飞猪</label></div>
+      <div class="chip"><input type="checkbox" id="p4" value="抖音"><label for="p4">抖音</label></div>
+      <div class="chip"><input type="checkbox" id="p5" value="其他"><label for="p5">其他</label></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>你的微信号<span class="req">*</span></label>
+    <input type="text" id="fWechat" placeholder="填一下，方便我加你备注（没有微信号就先填手机号）">
+  </div>
+
+  <button class="btn-submit" id="submitBtn">免费领首诊报告</button>
+  <div class="form-note">真人服务，不是软件。你的数据我保密，只帮你分析。</div>
+</section>
+
+<!-- 成功态 -->
+<section id="result">
+  <div class="success">
+    <div class="check">✓</div>
+    <h3>报告约好了，就差一步</h3>
+    <p>下面这段话已经填好你的信息。点「复制」，再去加我微信，发给我就行。</p>
+    <div class="msg-area">
+      <div class="msg-label">给周健斌的介绍话术（已生成）</div>
+      <div id="msgText"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-copy" id="copyBtn">一键复制这句话</button>
+      <a class="btn-wechat" id="addBtn" href="weixin://">添加我的微信</a>
+    </div>
+    <div class="qr-box"><img src="./wechat-qr.png" alt="微信二维码"></div>
+    <div class="wechat-id">微信号：z342168551</div>
+    <div class="wechat-hint">扫码或粘贴微信号，发我上面那段话即可开始</div>
+  </div>
+  <div class="back-link"><a href="#" onclick="resetForm(event)">← 填错了，重新填</a></div>
+</section>
+
+<!-- 信任 -->
+<section class="trust">
+  <h3>为什么找我，不是买软件？</h3>
+  <ul>
+    <li>真人 + AI 帮你分析出方案，不是丢个系统给你自己折腾</li>
+    <li>基于你 PMS 的真实数据，不是平台单方面说的</li>
+    <li>先免费诊断再付费，用数据说话，不合适不强求</li>
+    <li>就有经营问题直接微信问，当天响应</li>
+  </ul>
+  <div class="note">* 首批体验名额有限，每位酒店/民宿独立建档，数据仅用于给你的诊断，不会外传。</div>
+</section>
+
+<div class="footnote">显微镜下的酒店AI · 帮老板把经营看清做决策</div>
+
+<script>
+  var platforms = ["携程","美团","飞猪","抖音"];
+
+  function getChosen(){
+    var chosen = [];
+    for (var i=1;i<=5;i++){
+      var el = document.getElementById("p"+i);
+      if (el && el.checked) chosen.push(el.value);
+    }
+    return chosen;
+  }
+
+  document.getElementById("submitBtn").addEventListener("click", function(){
+    var hotel = document.getElementById("fHotel").value.trim();
+    var city  = document.getElementById("fCity").value.trim();
+    var wx    = document.getElementById("fWechat").value.trim();
+    var p     = getChosen();
+
+    if(!hotel){ alert("请填一下酒店/民宿名"); document.getElementById("fHotel").focus(); return; }
+    if(!city){ alert("请填一下所在城市"); document.getElementById("fCity").focus(); return; }
+    if(!wx){ alert("请填一下你的微信号或手机号"); document.getElementById("fWechat").focus(); return; }
+    if(p.length===0){ alert("请至少选一个卖房平台"); return; }
+
+    var msg = "你好周哥，我是「" + hotel + "」的负责人，店在" + city + "，" +
+              "主要在" + p.join("、") + "上卖房，想约一个免费首诊，帮我看看经营数据和竞对情况。" +
+              "微信联系我加这里：" + wx;
+
+    document.getElementById("msgText").textContent = msg;
+    document.getElementById("formCard").style.display = "none";
+    document.getElementById("result").classList.add("show");
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    var text = document.getElementById("msgText").textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function(){
+        this.textContent = "已复制 ✓ 去加微信发我就行";
+      }.bind(this)).catch(function(){ fallbackCopy(text, this); }.bind(this));
+    } else {
+      fallbackCopy(text, this);
+    }
+  });
+
+  function fallbackCopy(text, btn){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); btn.textContent="已复制 ✓"; }catch(e){ prompt("长按复制这段话：", text); }
+    document.body.removeChild(ta);
+  }
+
+  function resetForm(e){
+    e.preventDefault();
+    document.getElementById("result").classList.remove("show");
+    document.getElementById("formCard").style.display = "block";
+    document.getElementById("copyBtn").textContent = "一键复制这句话";
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+</script>
+</body>
+</html>
