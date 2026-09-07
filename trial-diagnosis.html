@@ -123,6 +123,10 @@
   </div>
 
   <div class="field">
+    <label>怎么称呼您<span class="req">*</span></label>
+    <input type="text" id="fName" placeholder="例如：王哥 / 张老板" autocomplete="name">
+  </div>
+  <div class="field">
     <label>酒店 / 民宿名<span class="req">*</span></label>
     <input type="text" id="fHotel" placeholder="例如：琶洲某某大酒店" autocomplete="organization">
   </div>
@@ -197,18 +201,20 @@
   }
 
   document.getElementById("submitBtn").addEventListener("click", function(){
+    var name  = document.getElementById("fName").value.trim();
     var hotel = document.getElementById("fHotel").value.trim();
     var city  = document.getElementById("fCity").value.trim();
     var wx    = document.getElementById("fWechat").value.trim();
     var p     = getChosen();
 
+    if(!name){ alert("请填一下怎么称呼您"); document.getElementById("fName").focus(); return; }
     if(!hotel){ alert("请填一下酒店/民宿名"); document.getElementById("fHotel").focus(); return; }
     if(!city){ alert("请填一下所在城市"); document.getElementById("fCity").focus(); return; }
     if(!wx){ alert("请填一下你的微信号或手机号"); document.getElementById("fWechat").focus(); return; }
     if(p.length===0){ alert("请至少选一个卖房平台"); return; }
 
-    var msg = "你好周哥，我是「" + hotel + "」的负责人，店在" + city + "，" +
-              "主要在" + p.join("、") + "上卖房，想约一个免费首诊，帮我看看经营数据和竞对情况。" +
+    var msg = "你好周哥，我是「" + hotel + "」的" + name + "，店在" + city + "，" +
+              "主要做" + p.join("、") + "，想约一个免费首诊，帮我看看经营数据和竞对情况。" +
               "微信联系我加这里：" + wx;
 
     document.getElementById("msgText").textContent = msg;
