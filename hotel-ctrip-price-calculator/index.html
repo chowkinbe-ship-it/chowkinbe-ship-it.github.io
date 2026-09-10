@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>携程价格计算 · 双向售价/底价测算</title>
+<style>
+  :root{
+    --bg:#eef1f6; --surface:#ffffff; --ink:#171c26; --muted:#5d6673; --muted2:#8a93a1;
+    --rule:#e4e7ee; --soft:#f5f7fb; --soft2:#fafbfd;
+    --brand:#1c5fe0; --brand-deep:#144cb8; --brand-ink:#0f3a8c;
+    --violet:#7a54d0; --violet-deep:#6d4bbf;
+    --ok:#12805c; --ok-bg:#e4f6ee; --warn:#b9760a; --warn-bg:#fdf3e2; --bad:#d43c2e; --bad-bg:#fdecea;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;background:
+    radial-gradient(1200px 420px at 50% -120px,#dfe7f5 0%,rgba(223,231,245,0) 60%),
+    var(--bg);
+    color:var(--ink);line-height:1.55;padding:20px 16px 40px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto}
+
+  .hero{position:relative;overflow:hidden;color:#fff;border-radius:16px;padding:20px 22px 18px;margin-bottom:14px;
+    background:linear-gradient(135deg,#1c5fe0 0%,#144cb8 60%,#0f3a8c 100%);
+    box-shadow:0 12px 28px -14px rgba(20,76,184,.5)}
+  .hero h1{font-size:21px;font-weight:800;letter-spacing:.01em;margin-bottom:4px}
+  .hero p{font-size:13px;opacity:.95}
+
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px}
+  .card-h{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .step{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
+    background:#e9effc;color:var(--brand-deep);font-size:10.5px;font-weight:800;flex:none}
+  .card-h h2{font-size:15.5px;font-weight:800;color:var(--ink)}
+  .card-h .sub{font-size:12px;color:var(--muted2);margin-left:auto}
+
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .field .lbl{display:flex;align-items:center;gap:4px;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-weight:600}
+  .field .lbl .req{color:var(--bad)}
+  .input-wrap{position:relative}
+  .input-wrap .suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:12px;pointer-events:none}
+  .input-wrap.input-num .suffix{padding-left:4px;border-left:1px solid var(--rule)}
+  input[type=number]{
+    width:100%;padding:10px 12px;border:1px solid var(--rule);border-radius:10px;font-size:15px;font-weight:600;
+    color:var(--ink);background:var(--soft2);transition:border-color .15s, box-shadow .15s, background .15s;
+    font-variant-numeric:tabular-nums;appearance:textfield;-moz-appearance:textfield}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]:focus{outline:none;border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(28,95,224,.14)}
+  .input-num{padding-right:34px}
+  .hint-field{font-size:11px;color:var(--muted2);margin-top:5px}
+
+  .switchs{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+  .switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;color:var(--ink);
+    padding:8px 12px;border:1px solid var(--rule);border-radius:20px;background:var(--soft2);
+    user-select:none;transition:all .15s}
+  .switch:hover{border-color:#c9d3e6}
+  .switch .dot{width:34px;height:20px;border-radius:20px;background:#ccd3e0;position:relative;transition:background .18s;flex:none}
+  .switch .dot::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .18s}
+  .switch input{display:none}
+  .switch.on{border-color:var(--brand);background:#eef4ff;color:var(--brand-ink)}
+  .switch.on .dot{background:var(--brand)}
+  .switch.on .dot::after{transform:translateX(14px)}
+  #cloudField{display:none}
+  #cloudField.in{display:block;margin-top:12px;max-width:220px;animation:fadeIn .2s ease}
+
+  /* 方向分段 */
+  .dir-head{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--ink);margin:18px 0 8px}
+  .dir-head .dir-tip{font-size:11px;font-weight:500;color:var(--muted2)}
+  .seg{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;background:var(--soft);padding:5px;border-radius:12px;margin-bottom:18px}
+  .seg button{border:none;background:transparent;padding:11px 6px;border-radius:9px;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .16s;font-family:inherit}
+  .seg button:hover{color:var(--ink)}
+  .seg button.on{background:#fff;color:var(--brand-deep);box-shadow:0 1px 3px rgba(20,35,70,.14)}
+  .seg button .sa{display:block;font-size:10.5px;font-weight:600;color:var(--muted2);margin-top:1px}
+  .seg button.on .sa{color:var(--brand)}
+  .main-input{display:none}
+  .main-input.show{display:block;animation:fadeIn .2s ease}
+  .main-input .row-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .main-input .row-title .arrow{color:var(--brand);font-weight:800}
+
+  .act-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:12px;font-size:11.5px;color:var(--muted)}
+  .act-legend span{display:inline-flex;align-items:center;gap:6px}
+  .chip{display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--brand)}
+  .chip.net{background:var(--violet)}
+  .group-label{font-size:12px;font-weight:700;color:var(--ink);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+  .group-label::after{content:"";flex:1;height:1px;background:var(--rule)}
+  .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .act{position:relative;display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--rule);border-radius:11px;
+    cursor:pointer;font-size:13.5px;background:var(--soft2);transition:all .15s;user-select:none}
+  .act:hover{border-color:#b9c6e2;background:#fff}
+  .act .box{width:18px;height:18px;border-radius:5px;border:1.6px solid #c3cad8;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;transition:all .16s}
+  .act .box::after{content:"";width:9px;height:9px;border-radius:3px;background:var(--brand);transform:scale(0);transition:transform .16s}
+  .act input{display:none}
+  .act .name{font-weight:600}
+  .act .tag{margin-left:auto;font-size:10.5px;color:var(--muted2);white-space:nowrap}
+  .act.checked{border-color:var(--brand);background:#eef4ff}
+  .act.checked .box{border-color:var(--brand);background:var(--brand)}
+  .act.checked .box::after{content:"";width:7px;height:7px;border-radius:2px;background:#fff;transform:scale(1)}
+  .act.nettype.checked{border-color:var(--violet);background:#f4f0fc}
+  .act.nettype.checked .box{border-color:var(--violet);background:var(--violet)}
+  .cut-panel{margin-top:10px;padding:12px 14px;background:#f7f9fd;border:1px dashed #c7d3ea;border-radius:11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;animation:fadeIn .2s ease}
+  .cut-panel .cut-lbl{font-size:12.5px;font-weight:600;color:var(--ink)}
+  .cut-panel input[type=number]{width:96px;text-align:center;font-weight:700;padding:8px 10px}
+  .cut-panel .cut-tip{font-size:11px;color:var(--muted2)}
+
+  .btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#1c5fe0,#144cb8);color:#fff;
+    font-size:16px;font-weight:800;cursor:pointer;transition:transform .1s, box-shadow .2s, filter .2s;
+    box-shadow:0 10px 22px -8px rgba(20,76,184,.5);letter-spacing:.02em;font-family:inherit}
+  .btn:hover{filter:brightness(1.05)}
+  .btn:active{transform:translateY(1px)}
+
+  .result{display:none;scroll-margin-top:12px}
+  .result.show{display:block;animation:fadeUp .28s ease}
+  .state-band{border-radius:12px;padding:14px 16px;font-weight:800;font-size:16px;text-align:center;margin-bottom:16px;letter-spacing:.01em}
+  .state-band.ok{background:var(--ok-bg);color:var(--ok)}
+  .state-band.warn{background:var(--warn-bg);color:var(--warn)}
+  .state-band.bad{background:var(--bad-bg);color:var(--bad)}
+  .state-band.info{background:#eef4ff;color:var(--brand-deep)}
+  .pricegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .pcard{background:var(--soft2);border:1px solid var(--rule);border-radius:12px;padding:13px 12px;text-align:center}
+  .pcard .lb{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+  .pcard .val{font-size:20px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .pcard.accent{background:linear-gradient(160deg,#eef4ff,#f5f9ff);border-color:#c7d6f2}
+  .pcard.accent .val{color:var(--brand-deep)}
+  .pcard.key{background:linear-gradient(160deg,#f2f0fd,#f8f6fe);border-color:#e0d7f3}
+  .pcard.key .val{color:var(--violet-deep);font-size:21px}
+  .pcard.rate{background:linear-gradient(160deg,#fdf3f0,#fef7f5);border-color:#f4d8d2}
+  .pcard.rate .val{color:#c14a2e;font-size:21px}
+  .net-break{font-size:12px;color:var(--muted2);margin-bottom:2px}
+  .detail{border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:6px}
+  .dgroup{background:var(--soft);font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.06em;padding:7px 14px}
+  .drow{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;font-size:13px;border-bottom:1px solid #f0f2f6}
+  .drow:last-child{border-bottom:none}
+  .drow .txt{color:var(--ink)}
+  .drow .minus{color:var(--bad);font-variant-numeric:tabular-nums;font-weight:600}
+  .drow .plus{color:var(--ok);font-variant-numeric:tabular-nums;font-weight:600}
+  .drow.total{background:linear-gradient(160deg,#eef4ff,#f5f9ff);font-weight:800;font-size:14px;color:var(--brand-ink)}
+  .result-hint{font-size:11.5px;color:var(--muted2);margin-top:12px;line-height:1.6}
+
+  .note{display:flex;gap:9px;background:var(--soft2);border:1px solid var(--rule);border-radius:11px;padding:12px 14px;font-size:12.5px;color:var(--muted)}
+  .note svg{flex:none;margin-top:2px}
+  .foot{text-align:center;color:var(--muted2);font-size:11.5px;margin-top:18px;line-height:1.7}
+  .pts-panel{background:#fbf7ec;border:1px solid #ecdcb4;border-radius:11px;padding:9px 12px;margin-bottom:12px;transition:background .2s,border-color .2s}
+  .pts-panel.active{background:#faf3d6;border-color:#d9b95c}
+  .pts-panel .act.pts{border-color:#e0c886;background:#fdfaf0}
+  .pts-panel .act.pts .box{border-color:#d4b26a}
+  .pts-panel .act.pts.checked{border-color:#a97c14;background:#fff8e0}
+  .pts-panel .act.pts.checked .box{border-color:#a97c14;background:#a97c14}
+  .pts-info{margin-top:8px;font-size:12px;line-height:1.6;border-top:1px dashed #e6d6ab;padding-top:8px;color:var(--ink)}
+  .pts-row{margin-bottom:6px}
+  .pts-row:last-child{margin-bottom:0}
+  .pts-row b{color:#8a5d00}
+  .pts-advice{background:#fdf3e2;border-radius:8px;padding:8px 10px;color:#7a4d00;line-height:1.7}
+  .pts-ratio{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff8e6;border:1px dashed #e2cb8f;border-radius:9px;padding:8px 10px}
+  .pts-ratio b{color:#8a5d00}
+  .ratio-in{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:#8a5d00;white-space:nowrap}
+  .ratio-in input{width:74px;padding:7px 10px;border:1px solid #dcbf7e;border-radius:8px;font-weight:700;font-size:14px;text-align:center;color:var(--ink);background:#fff;font-variant-numeric:tabular-nums}
+  .ratio-in input:focus{outline:none;border-color:#a97c14;box-shadow:0 0 0 3px rgba(169,124,20,.15)}
+  .pts-ratio .ratio-tip{font-size:11px;color:#9a7b3a;flex-basis:100%}
+
+  /* 优享会大面板（比积分面板更醒目） */
+  .vip-panel{background:linear-gradient(160deg,#f0f4ff,#f8faff);border:1.5px solid #c2d1f0;border-radius:14px;padding:15px 16px;margin-bottom:14px;transition:background .2s,border-color .2s,box-shadow .2s}
+  .vip-panel.active{background:linear-gradient(160deg,#e7efff,#f0f5ff);border-color:#8fb1ec;box-shadow:0 8px 20px -12px rgba(28,95,224,.4)}
+  .vip-panel .act.vip{border-color:#b9caf0;background:#ffffff}
+  .vip-panel .act.vip .box{border-color:#8aa8e6}
+  .vip-panel .act.vip.checked{border-color:#1c5fe0;background:#eaf1ff}
+  .vip-panel .act.vip.checked .box{border-color:#1c5fe0;background:#1c5fe0}
+  .vip-info{margin-top:12px;border-top:1px dashed #c5d4f0;padding-top:12px;font-size:12.5px;line-height:1.65}
+  .vip-desc{color:var(--muted);margin-bottom:11px}
+  .vip-desc b{color:#0f3a8c}
+  .tier-row{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}
+  .tier-chip{border:1px solid var(--rule);border-radius:10px;padding:8px 3px;background:#fff;cursor:pointer;text-align:center;transition:all .15s;user-select:none}
+  .tier-chip:hover{border-color:#b9caf0;transform:translateY(-1px)}
+  .tier-chip .tname{font-size:11px;font-weight:700}
+  .tier-chip .tquali{font-size:9px;color:var(--muted2);margin-top:2px;line-height:1.25}
+  .tier-chip .tcap{font-size:9px;color:var(--brand-deep);font-weight:700;margin-top:3px}
+  .tier-chip.on{border-color:#1c5fe0;background:#eaf1ff;color:var(--brand-ink);box-shadow:0 3px 10px -4px rgba(28,95,224,.4)}
+  .tier-chip.on .tcap{color:#144cb8}
+  .vip-pick{display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:#fff;border:1px dashed #b8ccf0;border-radius:9px;padding:8px 10px;margin-bottom:9px}
+  .vip-pick .pk-label{font-size:12px;font-weight:700;color:#144cb8;white-space:nowrap}
+  .disc-opt{display:inline-flex;align-items:center;border:1px solid var(--rule);border-radius:6px;padding:4px 9px;font-size:11.5px;cursor:pointer;background:#f5f7fb;transition:all .12s;user-select:none;color:var(--ink)}
+  .disc-opt:hover{border-color:#9db8ec}
+  .disc-opt.on{border-color:#1c5fe0;background:#eaf1ff;color:#144cb8;font-weight:700}
+  .disc-cap{font-size:11px;color:var(--muted2)}
+  .vip-advice{background:#eef4ff;border-radius:8px;padding:9px 11px;color:#0f3a8c;line-height:1.7}
+  .result-disclaimer{margin-top:14px;padding-top:11px;border-top:1px dashed var(--rule);display:flex;gap:7px;align-items:flex-start;color:var(--muted2);font-size:11px;line-height:1.7}
+  .result-disclaimer .di-ico{flex:none;margin-top:2px;color:#8a93a1}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  @media(max-width:560px){
+    .grid-4{grid-template-columns:1fr 1fr}
+    .grid-3{grid-template-columns:1fr 1fr}
+    .acts{grid-template-columns:1fr}
+    .tier-row{grid-template-columns:repeat(3,1fr)}
+    .pricegrid{grid-template-columns:repeat(2,1fr)}
+    body{padding:14px 12px 30px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <h1>携程价格测算</h1>
+      <p>底价⇆售价，一笔账往返算清。</p>
+    </div>
+  </header>
+
+  <!-- ① 基础费率 -->
+  <section class="card">
+    <div class="card-h"><h2>费率与测算方向</h2><span class="sub">佣金可自填 · 选一种换算</span></div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="lbl">佣金率</label>
+        <div class="input-wrap input-num"><input id="comm" type="number" inputmode="decimal" value="15" step="0.5"><span class="suffix">%</span></div>
+      </div>
+      <div class="field" id="cloudField">
+        <label class="lbl">云梯抽成</label>
+        <div class="input-wrap input-num"><input id="cloudRate" type="number" inputmode="decimal" value="5" step="0.5"><span class="suffix">%</span></div>
+      </div>
+    </div>
+    <div class="switchs">
+      <label class="switch" id="cloudSwitch"><input id="cloudOn" type="checkbox"><span class="dot"></span><span>投放云梯 / 直通车</span></label>
+    </div>
+
+    <div class="dir-head">测算方式<span class="dir-tip">两种换算法，选一种</span></div>
+    <div class="seg" id="seg">
+      <button data-mode="fwd" class="on">底价 → 售价<span class="sa">保底多少钱</span></button>
+      <button data-mode="rev">售价 → 底价<span class="sa">实付到手多少</span></button>
+    </div>
+
+    <div class="main-input show" id="panFwd">
+      <div class="row-title">保底底价 <span class="arrow">→</span> 对客售价</div>
+      <div class="grid-2">
+        <div class="field">
+          <label class="lbl">保底底价 <span class="req">*</span></label>
+          <div class="input-wrap input-num"><input id="base" type="number" inputmode="decimal" placeholder="如 300"><span class="suffix">元/间夜</span></div>
+          <div class="hint-field">就是你从平台收到的每间夜结算价（无活动时你应该刚好拿到这个数）</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-input" id="panRev">
+      <div class="row-title">对客售价 <span class="arrow">→</span> 实际到手（可承受底价）</div>
+      <div class="grid-2">
+        <div class="field">
+          <label class="lbl">对客售价（实付） <span class="req">*</span></label>
+          <div class="input-wrap input-num"><input id="sell" type="number" inputmode="decimal" placeholder="竞对价或拟定售价，如 213"><span class="suffix">元/间夜</span></div>
+          <div class="hint-field">指客人实际支付（减完活动后的展示价）</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 活动 -->
+  <section class="card">
+    <div class="card-h"><h2>参加的活动</h2><span class="sub">展示位：<b id="actCount" style="color:var(--brand);font-variant-numeric:tabular-nums">已选 0</b> · 最多 4 项</span></div>
+    <div class="act-legend">
+      <span><i class="chip"></i>计入「展示价+到手价」</span>
+      <span><i class="chip net"></i>只影响「到手净价」</span>
+    </div>
+    <div class="hint-field" style="margin-bottom:10px">现金券等平台补贴不参与测算，无需勾选。</div>
+
+    <!-- 优享会会员等级大面板 -->
+    <div class="vip-panel" id="vipPanel">
+      <label class="act vip" id="vipAct">
+        <span class="box"></span><input id="vipChk" type="checkbox">
+        <span class="name">优享会会员折扣</span>
+        <span class="tag">分六级，可自设每级立减比例</span>
+      </label>
+      <div class="vip-info">
+        <div class="vip-desc"><b>规则：</b>六个会员等级，折扣力度随等级递增，每一级你在后台可以自选一个「立减X%」比例，全算在展示价里。</div>
+        <div class="tier-row" id="tierRow">
+          <div class="tier-chip" data-tier="silver"><div class="tname">白银</div><div class="tquali">年订1-2次</div><div class="tcap">可选 5%~35%</div></div>
+          <div class="tier-chip" data-tier="gold"><div class="tname">黄金</div><div class="tquali">年订2-3次</div><div class="tcap">可选10%~40%</div></div>
+          <div class="tier-chip" data-tier="platinum"><div class="tname">铂金</div><div class="tquali">年订10+次</div><div class="tcap">可选10%~40%</div></div>
+          <div class="tier-chip" data-tier="diamond"><div class="tname">钻石</div><div class="tquali">年消18万</div><div class="tcap">可选15%~45%</div></div>
+          <div class="tier-chip" data-tier="golds"><div class="tname">金钻</div><div class="tquali">年消40万</div><div class="tcap">可选15%~45%</div></div>
+          <div class="tier-chip" data-tier="black"><div class="tname">黑钻</div><div class="tquali">年消50万+</div><div class="tcap">可选15%~45%</div></div>
+        </div>
+        <div id="vipDiscPick" class="vip-pick"><span class="pk-label">先选会员等级：</span><span id="vipDiscLabel">未选等级</span></div>
+        <div class="vip-advice"><b>选折扣推荐：</b>优先做「递增梯度」（白银5%→黑钻25%，或白银15%→黑钻35%），越高等级让利越多；对高客单价成熟店，高等级别给太高折扣，保留利润空间。<br><b>显示规则：</b>本单展示会按「减额从大到小」把最大折扣放前面，多个等级客人自动享受最优折扣。</div>
+      </div>
+    </div>
+
+    <!-- 积分联盟面板（缩小） -->
+    <div class="pts-panel" id="ptsPanel">
+      <label class="act pts" id="ptsAct">
+        <span class="box"></span><input id="ptsChk" type="checkbox">
+        <span class="name">积分联盟</span>
+        <span class="tag">建议项 · 平台补贴积分</span>
+      </label>
+      <div class="pts-info">
+        <div class="pts-row pts-ratio">
+          <b>你让利多少</b>&nbsp;＝&nbsp;
+          <span class="ratio-in"><input id="ptRatio" type="number" inputmode="decimal" value="5" step="0.5" min="0" max="100"><span>%　按折前底价</span></span>
+          <span class="ratio-tip">后台自设，一般 3%~8%</span>
+        </div>
+        <div class="pts-row"><b>每单你贴</b>：<span id="ptsExample">例：底价 300、让利 5% → 约贴 15 元</span>（按折前底价算）。</div>
+        <div class="pts-row"><b>钱谁出？</b>客人积分抵房费你出让利，<b>客人攒10倍积分平台出</b>。</div>
+        <div class="pts-row pts-advice"><b>要不要开？</b>出租率低/淡季/新店爬坡值得开；旺季满房别开。</div>
+      </div>
+    </div>
+
+    <div class="acts" id="acts"></div>
+    <button class="btn" id="calcBtn" style="margin-top:14px">算一笔</button>
+  </section>
+
+  <!-- 结果 -->
+  <section class="card result" id="result" style="border-color:#c7d6f2">
+    <div class="card-h"><h2>测算结果</h2><span class="sub" id="resultTag"></span></div>
+    <div class="state-band" id="state"></div>
+    <div class="pricegrid" id="priceGrid"></div>
+    <div class="net-break" id="netBreak"></div>
+    <div class="detail" id="detail" style="display:none"></div>
+    <div class="result-hint" id="subHint"></div>
+    <div class="result-disclaimer">
+      <svg class="di-ico" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 109 9 9 9 0 00-9-9z" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M12 8h.01M11 12h1v4h1" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+      <span>以上测算结果仅供参考，一切以平台最终展示为准，活动规则与优惠细节的解释权归平台方所有。</span>
+    </div>
+  </section>
+
+  <div class="note">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 109 9 9 9 0 00-9-9z" stroke="#5d6673" stroke-width="1.6" fill="none"/><path d="M10.5 12h1.5v4h1.5" stroke="#5d6673" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="8" r="1.1" fill="#5d6673"/></svg>
+    <span><strong>数据安全</strong>：纯前端本地计算，不入库、不联网、不上传任何价格数据，离线也能用。</span>
+  </div>
+
+  <div class="foot">由「显微镜下的酒店AI」整理维护 · 价格规则以携程平台最新公示为准</div>
+</div>
+
+<script>
+// 活动清单：id, name(后台), shop(展示名), cut('pct'折/'amt'立减/'netOnly'扣到手), nettype(只扣到手不改展示)
+const ACTIVITIES = [
+  {id:'member',     name:'会员专享价',        shop:'合并进优享会', cut:'pct'},
+  {id:'biz',        name:'商旅专享价',        shop:'商旅专享价', cut:'pct'},
+  {id:'discount',   name:'折扣券',            shop:'自定义名', cut:'amt'},
+  {id:'manjian',    name:'满减优惠',          shop:'满减券', cut:'amt'},
+  {id:'redpack',    name:'门店红包',          shop:'门店红包', cut:'amt'},
+  {id:'first',      name:'门店首单/新客',     shop:'按活动名', cut:'amt'},
+  {id:'early',      name:'早订特惠',          shop:'早鸟优惠', cut:'pct'},
+  {id:'flash',      name:'限时抢购/今夜特价', shop:'限时抢购', cut:'pct'},
+  {id:'stay',       name:'连住优惠',          shop:'连住优惠', cut:'pct'},
+  {id:'multi',      name:'多间优惠',          shop:'多间立减', cut:'amt'},
+  {id:'student',    name:'学生专享',          shop:'学生专享', cut:'pct'},
+  {id:'together',   name:'一起订专享',        shop:'一起订专享', cut:'amt'},
+  {id:'cashback',   name:'超值返现',          shop:'事后返现', cut:'netOnly', nettype:true},
+  {id:'plus',       name:'天天特价',          shop:'参与时自填优惠力度', cut:'netOnly', nettype:true, field:'天天特价（优惠力度）'},
+];
+
+// 优享会六档会员等级，每级可选的「立减%」随等级递增（与携程 EBK 后台一致）
+const VIP_TIERS={
+  silver:  {name:'白银贵宾',   discChoices:[5,10,15,20,25,30,35]},
+  gold:    {name:'黄金贵宾',   discChoices:[10,15,20,25,30,35,40]},
+  platinum:{name:'铂金贵宾',   discChoices:[10,15,20,25,30,35,40]},
+  diamond: {name:'钻石贵宾',   discChoices:[15,20,25,30,35,40,45]},
+  golds:   {name:'金钻贵宾',   discChoices:[15,20,25,30,35,40,45]},
+  black:   {name:'黑钻及合伙人', discChoices:[15,20,25,30,35,40,45]},
+};
+let VIP_TIER='gold';
+let VIP_DISC=15;
+
+let MODE = 'fwd';
+const modeMeta = {
+  fwd:  { tag:'底价 → 售价', pan:'panFwd' },
+  rev:  { tag:'售价 → 底价', pan:'panRev' },
+};
+
+function num(id){const v=parseFloat(document.getElementById(id).value);return isNaN(v)?0:v;}
+
+// ===== 方向分段 =====
+document.getElementById('seg').querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#seg button').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    MODE=btn.dataset.mode;
+    Object.keys(modeMeta).forEach(m=>{
+      document.getElementById(modeMeta[m].pan).classList.toggle('show',m===MODE);
+    });
+    document.getElementById('result').classList.remove('show');
+  });
+});
+
+// ===== 活动 =====
+function updateActCount(){
+  const cnt=document.querySelectorAll('.act:not(.nettype) input:checked').length;
+  const el=document.getElementById('actCount');
+  el.textContent='已选 '+cnt;
+  el.style.color= cnt>4 ? 'var(--bad)' : 'var(--brand)';
+}
+function renderActs(){
+  const box=document.getElementById('acts');
+  const showActs=ACTIVITIES.filter(a=>!a.nettype);
+  const netActs=ACTIVITIES.filter(a=>a.nettype && a.id!=='points');
+  let html='';
+  html+='<div class="group-label">展示活动</div>';
+  html+=showActs.map(a=>actHTML(a)).join('');
+  html+='<div class="group-label">到手净价（不占展示位，但真扣钱）</div>';
+  html+=netActs.map(a=>actHTML(a)).join('');
+  box.innerHTML=html;
+  box.querySelectorAll('.act').forEach(row=>{
+    const cb=row.querySelector('input');
+    cb.addEventListener('change',()=>{
+      row.classList.toggle('checked',cb.checked);
+      const pf=document.getElementById('cut_'+cb.dataset.id);
+      if(pf){pf.remove();}
+      updateActCount();
+      if(cb.checked){
+        const a=ACTIVITIES.find(x=>x.id===cb.dataset.id);
+        addCutField(a,row);
+      }
+    });
+  });
+  updateActCount();
+}
+function actHTML(a){
+  const cls='act'+(a.nettype?' nettype':'');
+  return `<label class="${cls}" data-id="${a.id}"><span class="box"></span><input type="checkbox" data-id="${a.id}"><span class="name">${a.name}</span><span class="tag">${a.shop}</span></label>`;
+}
+function addCutField(a,anchorRow){
+  const old=document.getElementById('cut_'+a.id); if(old) old.remove();
+  const wrap=document.createElement('div');
+  wrap.className='cut-panel';
+  wrap.id='cut_'+a.id;
+  let input='';
+  if(a.cut==='pct'){
+    input=`<span class="cut-lbl">${a.name} 折扣</span><input id="v_${a.id}" type="number" inputmode="decimal" step="0.5" placeholder="8折=80"><span class="cut-tip">折（8折填 80）</span>`;
+  } else if(a.cut==='amt'){
+    input=`<span class="cut-lbl">${a.name} 立减</span><input id="v_${a.id}" type="number" inputmode="decimal" placeholder="金额"><span class="cut-tip">元</span>`;
+  } else {
+    input=`<span class="cut-lbl">${a.field||(a.name+'（返现比例）')}</span><input id="v_${a.id}" type="number" inputmode="decimal" step="0.5" placeholder="如 3"><span class="cut-tip">%</span>`;
+  }
+  wrap.innerHTML=input;
+  const box=document.getElementById('acts');
+  if(anchorRow && anchorRow.parentNode){anchorRow.parentNode.insertBefore(wrap,anchorRow.nextSibling);}
+  else{box.appendChild(wrap);}
+}
+
+// ===== 开关 =====
+function bindSwitch(sw,on,field){
+  const switchEl=document.getElementById(sw);
+  const check=document.getElementById(on);
+  const sync=()=>{
+    switchEl.classList.toggle('on',check.checked);
+    if(on==='cloudOn'){
+          const f=document.getElementById(field);
+          if(f){f.classList.toggle('in',check.checked);}
+        }
+      };
+      switchEl.addEventListener('click',()=>{check.checked=!check.checked;sync();});
+      check.addEventListener('change',sync);
+      sync();
+    }
+    bindSwitch('cloudSwitch','cloudOn','cloudField');
+
+    // 积分联盟面板勾选态
+    const ptsChk=document.getElementById('ptsChk');
+    const ptsAct=document.getElementById('ptsAct');
+    const ptsPanel=document.getElementById('ptsPanel');
+    const ptsSync=()=>{
+      ptsAct.classList.toggle('checked',ptsChk.checked);
+      ptsPanel.classList.toggle('active',ptsChk.checked);
+    };
+    ptsChk.addEventListener('change',ptsSync);
+
+    // 积分联盟示例文字随底数+比例联动（底价 → 自动算预计贴钱，避免误导）
+    const baseInput=document.getElementById('base');
+    const ptsExample=document.getElementById('ptsExample');
+    const ptRatioInput=document.getElementById('ptRatio');
+    const ptsSyncExample=()=>{
+      const v=parseFloat(baseInput.value)||0;
+      const r=parseFloat(ptRatioInput.value)||0;
+      if(v>0 && r>0){ ptsExample.textContent='例：底价 '+v+'、让利 '+r+'% → 每单约贴 '+(Math.round(v*r/100*10)/10)+' 元'; }
+      else { ptsExample.textContent='例：底价 300、让利 5% → 每单约贴 15 元'; }
+    };
+    baseInput.addEventListener('input',ptsSyncExample);
+    baseInput.addEventListener('change',ptsSyncExample);
+    ptRatioInput.addEventListener('input',ptsSyncExample);
+    ptRatioInput.addEventListener('change',ptsSyncExample);
+
+    // 优享会：渲染当前会员等级的可选立减比例
+    function renderVipDiscs(){
+      const t=VIP_TIERS[VIP_TIER];
+      const pick=document.getElementById('vipDiscPick');
+      if(!t){ pick.innerHTML='<span class="pk-label">先选会员等级：</span><span id="vipDiscLabel">未选等级</span>'; return; }
+      const btns=t.discChoices.map(d=>`<span class="disc-opt${d===VIP_DISC?' on':''}" data-disc="${d}">立减 ${d}%</span>`).join('');
+      pick.innerHTML='<span class="pk-label">本单等级 & 立减：</span><span class="disc-cap" id="vipDiscLabel">'+t.name+' · 可选</span> '+btns;
+      pick.querySelectorAll('.disc-opt').forEach(o=>{
+        o.addEventListener('click',()=>{
+          VIP_DISC=parseInt(o.dataset.disc,10);
+          pick.querySelectorAll('.disc-opt').forEach(x=>x.classList.toggle('on',parseInt(x.dataset.disc,10)===VIP_DISC));
+        });
+      });
+    }
+
+    // 会员等级切换
+    document.querySelectorAll('#tierRow .tier-chip').forEach(chip=>{
+      chip.addEventListener('click',()=>{
+        document.querySelectorAll('#tierRow .tier-chip').forEach(c=>c.classList.remove('on'));
+        chip.classList.add('on');
+        VIP_TIER=chip.dataset.tier;
+        VIP_DISC=15;
+        renderVipDiscs();
+      });
+    });
+
+    // 优享会勾选态
+    const vipChk=document.getElementById('vipChk');
+    const vipAct=document.getElementById('vipAct');
+    const vipPanel=document.getElementById('vipPanel');
+    const vipSync=()=>{ vipAct.classList.toggle('checked',vipChk.checked); vipPanel.classList.toggle('active',vipChk.checked); };
+    vipChk.addEventListener('change',vipSync);
+    vipSync();
+
+    // 初始化：默认选中「黄金贵宾」并渲染可选项
+    const goldChip=document.querySelector('#tierRow .tier-chip[data-tier="gold"]');
+    if(goldChip){ goldChip.classList.add('on'); }
+    renderVipDiscs();
+
+const fmt = n => '¥ '+(Math.round(n*100)/100).toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:2});
+const fmtPct = n => (Math.round(n*1000)/10)+'%';
+
+// 计提率：佣金开 + 云梯开 + 返现/豪补（积分联盟改为按折前底价×自设比例单算，不进比例计提）
+function readRates(){
+  const comm=num('comm')/100;
+  const cloudOn=document.getElementById('cloudOn').checked;
+  const cloudRate=cloudOn ? num('cloudRate')/100 : 0;
+  let rebate=0;
+  document.querySelectorAll('.act input:checked').forEach(c=>{
+    const a=ACTIVITIES.find(x=>x.id===c.dataset.id);
+    if(a && a.nettype){ const v=num('v_'+a.id); if(v) rebate+=v/100; }
+  });
+  const ptsChk=document.getElementById('ptsChk');
+  const ptsOn= !!ptsChk && ptsChk.checked;
+  const ptsRatio=num('ptRatio')/100;
+  const vipChk=document.getElementById('vipChk');
+  const vipOn= !!vipChk && vipChk.checked;
+  return {comm, cloudOn, cloudRate, rebate, ptsOn, ptsRatio, vipOn, vipTier:VIP_TIER, vipDisc:VIP_DISC, total: comm+cloudRate+rebate};
+}
+
+function showPriceGrid(cards){
+  document.getElementById('priceGrid').innerHTML = cards.map(c=>
+    `<div class="pcard ${c.cls||''}"><div class="lb">${c.lb}</div><div class="val">${c.val}</div></div>`
+  ).join('');
+}
+function setState(cls, txt){ const el=document.getElementById('state'); el.className='state-band '+cls; el.textContent=txt; }
+
+function calc(){
+  const rates=readRates();
+  if(rates.comm>=1||rates.comm<0){alert('佣金率需在 0~100%');return;}
+  document.getElementById('state').style.display='block';
+  document.getElementById('detail').style.display='none';
+  document.getElementById('netBreak').textContent='';
+  document.getElementById('subHint').textContent='';
+
+  if(MODE==='fwd'){ calcFwd(rates); }
+  else { calcRev(rates); }
+}
+
+function calcFwd(rates){
+  const base=num('base'); if(base<=0){alert('请先填写保底底价');return;}
+  const comm=rates.comm;
+  const listPrice=base/(1-comm);
+
+  const sel=[...document.querySelectorAll('.act input:checked')].map(c=>c.dataset.id);
+  const showDiscs=[];
+  sel.forEach(id=>{
+    const a=ACTIVITIES.find(x=>x.id===id); if(!a||a.nettype) return;
+    const v=num('v_'+id); if(!v) return;
+    showDiscs.push({name:a.name, shop:a.shop, amount: a.cut==='pct'? listPrice*(1-v/100) : v});
+  });
+  if(rates.vipOn){
+    showDiscs.push({name:'优享会·'+VIP_TIERS[rates.vipTier].name, shop:'立减'+rates.vipDisc+'%', amount: listPrice*rates.vipDisc/100});
+  }
+  const shown=[...showDiscs].sort((x,y)=>y.amount-x.amount).slice(0,4);
+  const shownSum=shown.reduce((s,d)=>s+d.amount,0);
+  const showPrice=Math.max(listPrice-shownSum,0);
+  const excluded=showDiscs.filter(d=>!shown.some(s=>s.name===d.name));
+
+  // 积分联盟：按折前底价×自设让利比例单算，平台补积分抵扣，不计入比例计提
+  const ptsCost = rates.ptsOn && rates.ptsRatio>0 ? base*rates.ptsRatio : 0;
+  const net=showPrice*(1-rates.total) - ptsCost;
+
+  setState( net>=base ? 'ok' : (net>=base*0.9?'warn':'bad'),
+    net>=base ? '✅ 保本健康：到手 ≥ 底价' : (net>=base*0.9?'⚠️ 接近临界：到手接近底价':'🚫 亏本：到手低于底价，不可长期接') );
+
+  showPriceGrid([
+    {lb:'挂牌原价', val:fmt(listPrice)},
+    {lb:'对客展示价', val:fmt(showPrice), cls:'accent'},
+    {lb:'到手净价', val:fmt(net), cls:'key'},
+    {lb:'综合费率', val:showPrice>0?fmtPct((showPrice-net)/showPrice):'—', cls:'rate'},
+  ]);
+  document.getElementById('resultTag').textContent='底价 '+fmt(base)+' → 售价';
+  document.getElementById('detail').style.display='block';
+  let html='<div class="dgroup">价格构成</div>';
+  html+=`<div class="drow"><span class="txt">挂牌原价（底价÷(1−佣金${Math.round(comm*100)}%)）</span><span>${fmt(listPrice)}</span></div>`;
+  shown.forEach(x=>{ html+=`<div class="drow"><span class="txt">${x.name}（${x.shop}）</span><span class="minus">-${fmt(x.amount)}</span></div>`; });
+  html+=`<div class="drow"><span class="txt">对客展示价</span><span>${fmt(showPrice)}</span></div>`;
+  html+='<div class="dgroup">计提与到手</div>';
+  if(rates.comm) html+=`<div class="drow"><span class="txt">佣金（${Math.round(comm*100)}%）</span><span class="minus">-${fmt(showPrice*rates.comm)}</span></div>`;
+  if(rates.cloudRate) html+=`<div class="drow"><span class="txt">云梯 / 直通车</span><span class="minus">-${fmt(showPrice*rates.cloudRate)}</span></div>`;
+  if(rates.rebate) html+=`<div class="drow"><span class="txt">返现 / 豪补</span><span class="minus">-${fmt(showPrice*rates.rebate)}</span></div>`;
+  if(ptsCost) html+=`<div class="drow"><span class="txt">积分联盟 · 折前底价${fmt(base)}×让利${Math.round(rates.ptsRatio*100)}%，平台补积分</span><span class="minus">-${fmt(ptsCost)}</span></div>`;
+  html+=`<div class="drow total"><span class="txt">到手净价</span><span>${fmt(net)}</span></div>`;
+  document.getElementById('detail').innerHTML=html;
+
+  const notes=[];
+  notes.push('结算价口径：未叠活动时，到手 = 你录入的底价 = 平台结算价');
+  if(excluded.length) notes.push('本单未进入展示（超4项上限），本单不担其让利：'+excluded.map(x=>x.name).join('、'));
+  notes.push('综合费率 '+(showPrice>0?fmtPct((showPrice-net)/showPrice):0)+' =（实付 − 到手）÷ 实付');
+  document.getElementById('netBreak').textContent=notes.join(' · ');
+  document.getElementById('result').classList.add('show');
+  document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function calcRev(rates){
+  const sell=num('sell'); if(sell<=0){alert('请先填写对客售价');return;}
+  const net=sell*(1-rates.total);
+
+  setState('info','售价 → 底价：客人实付 '+fmt(sell)+'，酒店可承受底价（到手）为 '+fmt(net));
+  showPriceGrid([
+    {lb:'对客售价', val:fmt(sell), cls:'accent'},
+    {lb:'可承受底价（到手）', val:fmt(net), cls:'key'},
+    {lb:'综合费率', val:fmtPct((sell-net)/sell), cls:'rate'},
+    {lb:'佣金占比', val:fmtPct(sell*rates.comm/sell), },
+  ]);
+  document.getElementById('resultTag').textContent='售价 → 底价';
+  const rows=[];
+  if(rates.comm) rows.push(`佣金 ${Math.round(rates.comm*100)}%`);
+  if(rates.cloudRate) rows.push(`云梯 ${Math.round(rates.cloudRate*100)}%`);
+  if(rates.rebate) rows.push(`返现/豪补 ${Math.round(rates.rebate*100)}%`);
+  const ptsNote= rates.ptsOn ? `；积分联盟(折前底价×${rates.ptsRatio>0?Math.round(rates.ptsRatio*100):0}%)未计入` : '';
+  const vipNote= rates.vipOn ? `；优享会「${VIP_TIERS[rates.vipTier].name}」立减${rates.vipDisc}%未计入` : '';
+  document.getElementById('netBreak').textContent='到手 = '+fmt(sell)+' − 计提（'+(rows.join('、')||'无')+'）≈ '+fmt(net)+'。想保本，底价别设高于 '+fmt(net)+(ptsNote||vipNote?('  （注：'+ptsNote.replace(/^；/,'')+(ptsNote&&vipNote?'；':'')+vipNote.replace(/^；/,'')+'，请用「底价→售价」精确测算）'):'');
+  document.getElementById('result').classList.add('show');
+  document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+document.getElementById('calcBtn').addEventListener('click',calc);
+document.getElementById('calcBtn').addEventListener('keydown',e=>{if(e.key==='Enter')calc();});
+renderActs();
+</script>
+</body>
+</html>
